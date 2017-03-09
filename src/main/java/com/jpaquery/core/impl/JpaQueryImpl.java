@@ -31,10 +31,10 @@ import com.jpaquery.core.facade.Order;
 import com.jpaquery.core.facade.OrderPath;
 import com.jpaquery.core.facade.Select;
 import com.jpaquery.core.facade.SelectPath;
-import com.jpaquery.core.facade.SubFinder;
+import com.jpaquery.core.facade.SubJpaQuery;
 import com.jpaquery.core.facade.Where;
 import com.jpaquery.core.facade.WherePath;
-import com.jpaquery.core.facade.SubFinder.SubFinderType;
+import com.jpaquery.core.facade.SubJpaQuery.SubJpaQueryType;
 import com.jpaquery.core.render.JpaQueryRender;
 import com.jpaquery.core.vo.EntityInfo;
 import com.jpaquery.core.vo.FromInfo;
@@ -159,7 +159,7 @@ public class JpaQueryImpl implements JpaQuery {
 		joinImpl = new JoinImpl(finderHandler, this);
 	}
 
-	public JpaQuery subFinder() {
+	public JpaQuery subJpaQuery() {
 		JpaQueryImpl subFinderImpl = new JpaQueryImpl(finderHandler, finderRender);
 		subFinderImpl.parentFinder = this;
 		subFinderImpl.getParentFromInfos().putAll(getCurrentFromInfos());
@@ -319,16 +319,16 @@ public class JpaQueryImpl implements JpaQuery {
 		return toQueryContent(true);
 	}
 
-	public SubFinder any() {
-		return new SubFinderImpl(this, SubFinderType.any);
+	public SubJpaQuery any() {
+		return new SubJpaQueryImpl(this, SubJpaQueryType.any);
 	}
 
-	public SubFinder some() {
-		return new SubFinderImpl(this, SubFinderType.some);
+	public SubJpaQuery some() {
+		return new SubJpaQueryImpl(this, SubJpaQueryType.some);
 	}
 
-	public SubFinder all() {
-		return new SubFinderImpl(this, SubFinderType.all);
+	public SubJpaQuery all() {
+		return new SubJpaQueryImpl(this, SubJpaQueryType.all);
 	}
 
 	public String alias(Object proxyInstance) {

@@ -9,18 +9,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.facade.SelectPath.SelectPathType;
-import com.jpaquery.core.impl.JpaQueryImpl;
 import com.jpaquery.core.impl.GroupImpl;
 import com.jpaquery.core.impl.GroupPathImpl;
 import com.jpaquery.core.impl.HavingImpl;
 import com.jpaquery.core.impl.HavingPathImpl;
 import com.jpaquery.core.impl.JoinPathImpl;
+import com.jpaquery.core.impl.JpaQueryImpl;
 import com.jpaquery.core.impl.OrderImpl;
 import com.jpaquery.core.impl.OrderPathImpl;
 import com.jpaquery.core.impl.QueryAppenderImpl;
 import com.jpaquery.core.impl.SelectImpl;
 import com.jpaquery.core.impl.SelectPathImpl;
-import com.jpaquery.core.impl.SubFinderImpl;
+import com.jpaquery.core.impl.SubJpaQueryImpl;
 import com.jpaquery.core.impl.WhereImpl;
 import com.jpaquery.core.impl.WherePathImpl;
 import com.jpaquery.core.render.JpaQueryRender;
@@ -137,21 +137,21 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 					queryContent.append(pathQueryContent);
 					count++;
 				}
-			} else if (wherePath instanceof SubFinderImpl) {
-				SubFinderImpl subFinderImpl = (SubFinderImpl) wherePath;
-				if (subFinderImpl.getFinderImpl().getSelectImpl().getSelectPaths().isEmpty()) {
+			} else if (wherePath instanceof SubJpaQueryImpl) {
+				SubJpaQueryImpl subFinderImpl = (SubJpaQueryImpl) wherePath;
+				if (subFinderImpl.getJpaQueryImpl().getSelectImpl().getSelectPaths().isEmpty()) {
 					throw new IllegalStateException(String.format(
-							"The sub finder must be contains one and only one select path,this sub finder is:%s",
-							subFinderImpl.getFinderImpl().toQueryContent()));
+							"The sub JpaQuery must be contains one and only one select path,this sub finder is:%s",
+							subFinderImpl.getJpaQueryImpl().toQueryContent()));
 				}
-				pathQueryContent = subFinderImpl.getFinderImpl().toQueryContent();
+				pathQueryContent = subFinderImpl.getJpaQueryImpl().toQueryContent();
 				if (pathQueryContent != null) {
 					if (count > 0) {
 						queryContent.getQueryBuilder().append(" ");
 						queryContent.getQueryBuilder().append(whereImpl.getType().name());
 						queryContent.getQueryBuilder().append(" ");
 					}
-					switch (subFinderImpl.getSubFinderType()) {
+					switch (subFinderImpl.getSubJpaQueryType()) {
 					case exists:
 						queryContent.append("exists");
 						break;

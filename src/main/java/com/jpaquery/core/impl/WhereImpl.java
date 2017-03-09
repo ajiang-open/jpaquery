@@ -13,7 +13,7 @@ import com.jpaquery.core.facade.Or;
 import com.jpaquery.core.facade.QueryAppender;
 import com.jpaquery.core.facade.Where;
 import com.jpaquery.core.facade.WherePath;
-import com.jpaquery.core.facade.SubFinder.SubFinderType;
+import com.jpaquery.core.facade.SubJpaQuery.SubJpaQueryType;
 import com.jpaquery.core.vo.EntityInfo;
 import com.jpaquery.core.vo.QueryContent;
 
@@ -105,13 +105,13 @@ public class WhereImpl implements Where, Or, And {
 	}
 
 	public Where exists(JpaQuery subFinder) {
-		SubFinderImpl subFinderImpl = new SubFinderImpl((JpaQueryImpl) subFinder, SubFinderType.exists);
+		SubJpaQueryImpl subFinderImpl = new SubJpaQueryImpl((JpaQueryImpl) subFinder, SubJpaQueryType.exists);
 		wherePaths.add(subFinderImpl);
 		return this;
 	}
 
 	public Where notExists(JpaQuery subFinder) {
-		SubFinderImpl subFinderImpl = new SubFinderImpl((JpaQueryImpl) subFinder, SubFinderType.notExists);
+		SubJpaQueryImpl subFinderImpl = new SubJpaQueryImpl((JpaQueryImpl) subFinder, SubJpaQueryType.notExists);
 		wherePaths.add(subFinderImpl);
 		return this;
 	}

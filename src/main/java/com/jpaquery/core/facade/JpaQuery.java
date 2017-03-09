@@ -22,7 +22,7 @@ public interface JpaQuery extends QueryRender {
 	 * 
 	 * @return
 	 */
-	public abstract JpaQuery subFinder();
+	public abstract JpaQuery subJpaQuery();
 
 	/**
 	 * 指定from的表类型
@@ -150,21 +150,21 @@ public interface JpaQuery extends QueryRender {
 	 * 
 	 * @return
 	 */
-	public SubFinder any();
+	public SubJpaQuery any();
 
 	/**
 	 * 生成some谓词
 	 * 
 	 * @return
 	 */
-	public SubFinder some();
+	public SubJpaQuery some();
 
 	/**
 	 * 生成all谓词
 	 * 
 	 * @return
 	 */
-	public SubFinder all();
+	public SubJpaQuery all();
 
 	/**
 	 * 获取对象或者字段的别名

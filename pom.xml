@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jpaquery</groupId>
 	<artifactId>jpaquery</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JPAQuery</name>
 	<description>Full-featured java web development jpaquery</description>
@@ -123,6 +123,8 @@
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<spring-data-jpa.version>1.11.1.RELEASE</spring-data-jpa.version>
 		<hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
+		<junit.version>4.12</junit.version>
+		<log4j.version>2.6.1</log4j.version>
 	</properties>
 
 	<dependencies>
@@ -142,11 +144,8 @@
 			<version>${commons-beanutils.version}</version>
 		</dependency>
 		<dependency>
-			    
 			<groupId>org.springframework.data</groupId>
-			    
 			<artifactId>spring-data-jpa</artifactId>
-			    
 			<version>${spring-data-jpa.version}</version>
 		</dependency>
 		<dependency>
@@ -163,23 +162,26 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.6.1</version>
+			<version>${log4j.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>2.6.1</version>
+			<version>${log4j.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.6.1</version>
+			<version>${log4j.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

@@ -1,7 +1,7 @@
 package com.jpaquery.core.facade;
 
-public interface SubFinder {
-	public enum SubFinderType {
+public interface SubJpaQuery {
+	public enum SubJpaQueryType {
 		exists, notExists, all, any, some;
 	}
 }
