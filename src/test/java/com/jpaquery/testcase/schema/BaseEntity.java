@@ -12,7 +12,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 抽象实体类型，用于联合主键表
@@ -38,14 +37,12 @@ public abstract class BaseEntity implements Serializable, Cloneable {
 	 */
 	@Column(name = "last_updated_")
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	protected Date lastUpdated;
 	/**
 	 * 创建时间
 	 */
 	@Column(name = "date_created_")
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	protected Date dateCreated;
 
 	/**
