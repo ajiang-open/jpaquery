@@ -20,19 +20,10 @@ import net.sf.cglib.proxy.MethodProxy;
  * @author lujijiang
  * 
  */
-public class Proxys {
+public class _Proxys {
 
-	private Proxys() {
+	private _Proxys() {
 	}
-
-	/**
-	 * 空类型数组
-	 */
-	private static final Class<?>[] EMPTY_TYPES = new Class<?>[] {};
-	/**
-	 * 空对象数组
-	 */
-	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	/**
 	 * 创建代理对象（只能最多有一个非接口类型）
@@ -84,7 +75,7 @@ public class Proxys {
 		en.setUseCache(true);
 		en.setUseFactory(false);
 		en.setSuperclass(superClass);
-		en.setInterfaces(interfaceTypes.toArray(EMPTY_TYPES));
+		en.setInterfaces(interfaceTypes.toArray(_Helper.EMPTY_TYPES));
 		en.setCallback(new MethodInterceptor() {
 			public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 				return invokeMethod(invocationHandler, obj, method, args);
@@ -119,7 +110,7 @@ public class Proxys {
 	 */
 	private static ClassLoader getClassLoader() {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		return classLoader == null ? Proxys.class.getClassLoader() : classLoader;
+		return classLoader == null ? _Proxys.class.getClassLoader() : classLoader;
 	}
 
 	/**
@@ -208,7 +199,7 @@ public class Proxys {
 	 */
 	public static <T> T newProxyInstance(final InvocationHandler invocationHandler, Class<T> mainType,
 			Class<?>... otherTypes) {
-		return newProxyInstance(invocationHandler, mainType, otherTypes, EMPTY_ARRAY);
+		return newProxyInstance(invocationHandler, mainType, otherTypes, _Helper.EMPTY_ARRAY);
 	}
 
 	/**
@@ -224,7 +215,7 @@ public class Proxys {
 	 */
 	public static <T> T newProxyInstance(final InvocationHandler invocationHandler, Class<T> mainType,
 			Object... arguments) {
-		return newProxyInstance(invocationHandler, mainType, EMPTY_TYPES, arguments);
+		return newProxyInstance(invocationHandler, mainType, _Helper.EMPTY_TYPES, arguments);
 	}
 
 	/**
@@ -237,7 +228,7 @@ public class Proxys {
 	 * @return 代理对象
 	 */
 	public static <T> T newProxyInstance(final InvocationHandler invocationHandler, Class<T> mainType) {
-		return newProxyInstance(invocationHandler, mainType, EMPTY_TYPES);
+		return newProxyInstance(invocationHandler, mainType, _Helper.EMPTY_TYPES);
 	}
 
 	/**

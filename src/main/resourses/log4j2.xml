@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration monitorInterval="1">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36}:%L - %msg%xEx%n" />
+		</Console>
+		
+		<RollingFile name="RollingFile" fileName="logs/jpaquery.log"
+			filePattern="logs/$${date:yyyy-MM}/jpaquery-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} %class{36}:%L %t - %msg%xEx%n" />
+			<SizeBasedTriggeringPolicy size="500 MB" />
+		</RollingFile>
+		
+		<Console name="Log4jdbcConsole" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} - %msg%n%n" />
+		</Console>
+	    
+	    <RollingFile name="Log4jdbcRollingFile" fileName="logs/jpaquery.jdbc.log"
+			filePattern="logs/$${date:yyyy-MM}/jpaquery.jdbc-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} %t - %msg%n" />
+			<SizeBasedTriggeringPolicy size="500 MB" />
+		</RollingFile>
+	</appenders>
+	
+	<loggers>
+		<logger name="log4jdbc.log4j2" level="info" additivity="false">
+			<MarkerFilter marker="LOG4JDBC_SQL" onMatch="ACCEPT" onMismatch="DENY"/>
+			<appender-ref ref="Log4jdbcConsole" />
+			<appender-ref ref="Log4jdbcRollingFile" />
+		</logger>
+		
+		<logger name="com.jpaquery" level="debug" additivity="false">
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="Console" />
+		</logger>
+	
+		<root level="info">
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="Console" />
+		</root>
+	</loggers>
+	
+</configuration>
