@@ -387,16 +387,11 @@ public class JpaQueryImpl implements JpaQuery {
 	 * @return
 	 */
 	private Query createQuery(EntityManager em, QueryContent queryContent) {
-		logger.debug("JpaQuery JPQL:\r\n{}", queryContent);
+		logger.debug("JPQL:{}", queryContent);
 		Query query = em.createQuery(queryContent.getQueryString());
 		for (String name : queryContent.getArguments().keySet()) {
 			Object arg = queryContent.getArguments().get(name);
 			if (arg != null && arg instanceof Date) {
-				// if (arg instanceof Timestamp) {
-				// query.setParameter(name, (Date) arg, TemporalType.TIMESTAMP);
-				// } else {
-				// query.setParameter(name, (Date) arg, TemporalType.DATE);
-				// }
 				Timestamp value = new Timestamp(((Date) arg).getTime());
 				query.setParameter(name, value);
 				continue;
