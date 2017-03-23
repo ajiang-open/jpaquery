@@ -13,28 +13,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.jpaquery.core.facade.And;
-import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.facade.Group;
 import com.jpaquery.core.facade.GroupPath;
 import com.jpaquery.core.facade.Having;
 import com.jpaquery.core.facade.HavingPath;
 import com.jpaquery.core.facade.Join;
 import com.jpaquery.core.facade.JoinPath;
+import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.facade.Or;
 import com.jpaquery.core.facade.Order;
 import com.jpaquery.core.facade.OrderPath;
 import com.jpaquery.core.facade.Select;
 import com.jpaquery.core.facade.SelectPath;
 import com.jpaquery.core.facade.SubJpaQuery;
+import com.jpaquery.core.facade.SubJpaQuery.SubJpaQueryType;
 import com.jpaquery.core.facade.Where;
 import com.jpaquery.core.facade.WherePath;
-import com.jpaquery.core.facade.SubJpaQuery.SubJpaQueryType;
 import com.jpaquery.core.render.JpaQueryRender;
 import com.jpaquery.core.vo.EntityInfo;
 import com.jpaquery.core.vo.FromInfo;
@@ -50,6 +52,8 @@ import com.jpaquery.util._MergeMap;
  * 
  */
 public class JpaQueryImpl implements JpaQuery {
+
+	private static final Logger logger = LoggerFactory.getLogger(JpaQueryImpl.class);
 	/**
 	 * 子查询
 	 */
@@ -383,6 +387,7 @@ public class JpaQueryImpl implements JpaQuery {
 	 * @return
 	 */
 	private Query createQuery(EntityManager em, QueryContent queryContent) {
+		logger.debug("JpaQuery JPQL:\r\n{}", queryContent);
 		Query query = em.createQuery(queryContent.getQueryString());
 		for (String name : queryContent.getArguments().keySet()) {
 			Object arg = queryContent.getArguments().get(name);
@@ -403,6 +408,7 @@ public class JpaQueryImpl implements JpaQuery {
 
 	private Query createQuery(EntityManager em, JpaQuery finder, boolean cacheable) {
 		QueryContent queryContent = finder.toQueryContent();
+
 		Query query = createQuery(em, queryContent);
 		cacheable(query, cacheable);
 		return query;

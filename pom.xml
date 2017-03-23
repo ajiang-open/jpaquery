@@ -2,16 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.saasxx</groupId>
+	<groupId>com.jpaquery</groupId>
 	<artifactId>jpaquery</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JPAQuery</name>
-	<description>Full-featured java web development jpaquery</description>
-	<url>https://github.com/saasxx-open/jpaquery</url>
+	<description>A tool for jpa</description>
+	<url>https://github.com/ajiang-open/jpaquery</url>
 	<organization>
-		<name>saasxx.com</name>
-		<url>https://github.com/saasxx-open/jpaquery</url>
+		<name>jpaquery.com</name>
+		<url>https://github.com/ajiang-open/jpaquery</url>
 	</organization>
 	<licenses>
 		<license>
@@ -28,13 +28,13 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:git://github.com/saasxx-open/jpaquery</connection>
-		<developerConnection>scm:git:git://github.com/saasxx-open/jpaquery</developerConnection>
-		<url>https://github.com/saasxx-open/jpaquery</url>
+		<connection>scm:git:git://github.com/ajiang-open/jpaquery</connection>
+		<developerConnection>scm:git:git://github.com/ajiang-open/jpaquery</developerConnection>
+		<url>https://github.com/ajiang-open/jpaquery</url>
 	</scm>
 	<issueManagement>
 		<system>Github</system>
-		<url>https://github.com/saasxx-open/jpaquery/issues</url>
+		<url>https://github.com/ajiang-open/jpaquery/issues</url>
 	</issueManagement>
 
 	<repositories>
@@ -207,8 +207,8 @@
 			<!-- 部署配置 -->
 			<distributionManagement>
 				<repository>
-					<id>saasxx-snapshots</id>
-					<name>SAASXX Snapshot Repository</name>
+					<id>jpaquery-snapshots</id>
+					<name>JpaQuery Snapshot Repository</name>
 					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 				</repository>
 			</distributionManagement>
@@ -218,8 +218,8 @@
 			<!-- 部署配置 -->
 			<distributionManagement>
 				<snapshotRepository>
-					<id>saasxx-releases</id>
-					<name>SAASXX Release Repository</name>
+					<id>jpaquery-releases</id>
+					<name>JpaQuery Release Repository</name>
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 				</snapshotRepository>
 			</distributionManagement>
