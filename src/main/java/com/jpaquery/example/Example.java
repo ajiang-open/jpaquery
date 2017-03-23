@@ -8,11 +8,14 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jpaquery.core.facade.JpaQuery;
+import com.jpaquery.core.impl.JpaQueryImpl;
+import com.jpaquery.core.vo.FromInfo;
 import com.jpaquery.util._Helper;
 
 public class Example {
@@ -185,9 +188,14 @@ public class Example {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T toFinder(JpaQuery jpaQuery, T example) {
-		Class<T> entityClass = (Class<T>) example.getClass();
-		return toFinder(jpaQuery, entityClass, example);
+	public <T> void toJpaQuery(JpaQuery jpaQuery, Object example) {
+		JpaQueryImpl jpaQueryImpl = (JpaQueryImpl) jpaQuery;
+		Iterator<FromInfo> iterator = jpaQueryImpl.froms().iterator();
+		if (!iterator.hasNext()) {
+			throw new IllegalStateException("The jpaQuery should from some entity class first");
+		}
+		T entityModel = (T) iterator.next().getEntityInfo().getProxy();
+		toJpaQuery(jpaQuery, example, entityModel);
 	}
 
 	/**
@@ -203,21 +211,20 @@ public class Example {
 	 *            样例对象
 	 * @return
 	 */
-	public <T> T toFinder(JpaQuery jpaQuery, Class<T> entityClass, Object example) {
+	public <T> void toJpaQuery(JpaQuery jpaQuery, Object example, T entityModel) {
 		if (jpaQuery == null) {
 			throw new IllegalArgumentException("The jpaQuery should not be null");
 		}
-		if (entityClass == null) {
-			throw new IllegalArgumentException("The entityClass should not be null");
+		if (entityModel == null) {
+			throw new IllegalArgumentException("The entityModel should not be null");
 		}
 		if (example == null) {
 			throw new IllegalArgumentException("The example should not be null");
 		}
-		T entityModel = jpaQuery.from(entityClass);
 		String alias = jpaQuery.alias(entityModel);
 		AtomicInteger paramIndex = new AtomicInteger(0);
 		try {
-			toFinder(new HashSet<Integer>(), null, example, jpaQuery, alias, paramIndex);
+			toJpaQuery(new HashSet<Integer>(), null, example, jpaQuery, alias, paramIndex);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalArgumentException e) {
@@ -227,7 +234,6 @@ public class Example {
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
-		return entityModel;
 	}
 
 	/**
@@ -248,7 +254,7 @@ public class Example {
 	 * @throws IllegalAccessException
 	 * @throws IntrospectionException
 	 */
-	private void toFinder(Set<Integer> hashs, String prefixPath, Object example, JpaQuery jpaQuery, String alias,
+	private void toJpaQuery(Set<Integer> hashs, String prefixPath, Object example, JpaQuery jpaQuery, String alias,
 			AtomicInteger paramIndex)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		Integer hash = System.identityHashCode(example);
@@ -299,7 +305,6 @@ public class Example {
 						continue;
 					}
 				}
-
 				jpaQuery.where().append(alias.concat(".").concat(path).concat(" like :").concat(name)).arg(name,
 						String.valueOf(value));
 			} else if (propertyType.isPrimitive()) {
@@ -337,7 +342,7 @@ public class Example {
 					if (Map.class.isAssignableFrom(propertyType)) {
 						continue;
 					}
-					toFinder(hashs, path, value, jpaQuery, alias, paramIndex);
+					toJpaQuery(hashs, path, value, jpaQuery, alias, paramIndex);
 				}
 			}
 		}

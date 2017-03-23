@@ -5,4 +5,4 @@
  * @author lujijiang
  *
  */
-package com.jpaquery.support.primeng;
+package com.jpaquery.testcase.vo;
