@@ -13,9 +13,25 @@ public interface WherePath<T> {
 
 	Where notLike(T obj);
 
+	Where likeLeft(T obj);
+
+	Where notLikeLeft(T obj);
+
+	Where likeRight(T obj);
+
+	Where notLikeRight(T obj);
+
 	Where ilike(T obj);
 
 	Where notIlike(T obj);
+
+	Where ilikeLeft(T obj);
+
+	Where notILikeLeft(T obj);
+
+	Where ilikeRight(T obj);
+
+	Where notILikeRight(T obj);
 
 	Where greatThan(T obj);
 
@@ -69,9 +85,25 @@ public interface WherePath<T> {
 
 	Where notLikeIfExist(T obj);
 
+	Where likeLeftIfExist(T obj);
+
+	Where notLikeLeftIfExist(T obj);
+
+	Where likeRightIfExist(T obj);
+
+	Where notLikeRightIfExist(T obj);
+
 	Where ilikeIfExist(T obj);
 
 	Where notIlikeIfExist(T obj);
+
+	Where ilikeLeftIfExist(T obj);
+
+	Where notILikeLeftIfExist(T obj);
+
+	Where ilikeRightIfExist(T obj);
+
+	Where notILikeRightIfExist(T obj);
 
 	Where greatThanIfExist(T obj);
 

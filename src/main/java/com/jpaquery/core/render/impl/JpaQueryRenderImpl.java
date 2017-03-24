@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.jpaquery.core.constant.LikeWay;
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.facade.SelectPath.SelectPathType;
 import com.jpaquery.core.impl.GroupImpl;
@@ -469,9 +470,21 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 				throw new IllegalArgumentException(
 						String.format("The info path %s root proxy instance is not valid", pathInfo));
 			}
+			if (pathInfo.getLikeWay() != null) {
+				queryContent.append("concat(");
+			}
+			if (LikeWay.rightLike.equals(pathInfo.getLikeWay())) {
+				queryContent.append("'%',");
+			}
 			queryContent.append(entityInfo.getAlias());
 			queryContent.append(".");
 			queryContent.append(pathInfo.getPathBuilder().toString());
+			if (LikeWay.leftLike.equals(pathInfo.getLikeWay())) {
+				queryContent.append(",'%'");
+			}
+			if (pathInfo.getLikeWay() != null) {
+				queryContent.append(")");
+			}
 		} else if (arg instanceof JpaQueryImpl) {
 			if (((JpaQueryImpl) arg).getSelectImpl().getSelectPaths().isEmpty()) {
 				throw new IllegalStateException(String.format(

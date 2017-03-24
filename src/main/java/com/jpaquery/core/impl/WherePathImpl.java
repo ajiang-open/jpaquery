@@ -1,9 +1,12 @@
 package com.jpaquery.core.impl;
 
+import com.jpaquery.core.constant.LikeWay;
 import com.jpaquery.core.facade.BetweenPath;
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.facade.Where;
 import com.jpaquery.core.facade.WherePath;
+import com.jpaquery.core.vo.PathInfo;
+import com.jpaquery.util._Helper;
 
 /**
  * Where路径实现类
@@ -71,8 +74,7 @@ public class WherePathImpl<T> implements WherePath<T> {
 		return args;
 	}
 
-	public WherePathImpl(JpaQueryHandler finderHandler, JpaQueryImpl finderImpl,
-			WhereImpl whereImpl, Object left) {
+	public WherePathImpl(JpaQueryHandler finderHandler, JpaQueryImpl finderImpl, WhereImpl whereImpl, Object left) {
 		this.finderHandler = finderHandler;
 		this.finderImpl = finderImpl;
 		this.whereImpl = whereImpl;
@@ -159,17 +161,16 @@ public class WherePathImpl<T> implements WherePath<T> {
 	public BetweenPath<T> between(T obj) {
 		Object arg = finderHandler.getPathInfo();
 		arg = arg == null ? obj : arg;
-		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler,
-				finderImpl, whereImpl, this, WherePathType.between, false, arg);
+		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler, finderImpl, whereImpl, this,
+				WherePathType.between, false, arg);
 		return betweenPath;
 	}
 
 	public BetweenPath<T> notBetween(T obj) {
 		Object arg = finderHandler.getPathInfo();
 		arg = arg == null ? obj : arg;
-		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler,
-				finderImpl, whereImpl, this, WherePathType.notBetween, false,
-				arg);
+		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler, finderImpl, whereImpl, this,
+				WherePathType.notBetween, false, arg);
 		return betweenPath;
 	}
 
@@ -224,16 +225,14 @@ public class WherePathImpl<T> implements WherePath<T> {
 	}
 
 	public BetweenPath<T> between(JpaQuery subFinder) {
-		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler,
-				finderImpl, whereImpl, this, WherePathType.between, false,
-				subFinder);
+		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler, finderImpl, whereImpl, this,
+				WherePathType.between, false, subFinder);
 		return betweenPath;
 	}
 
 	public BetweenPath<T> notBetween(JpaQuery subFinder) {
-		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler,
-				finderImpl, whereImpl, this, WherePathType.notBetween, false,
-				subFinder);
+		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler, finderImpl, whereImpl, this,
+				WherePathType.notBetween, false, subFinder);
 		return betweenPath;
 	}
 
@@ -308,17 +307,16 @@ public class WherePathImpl<T> implements WherePath<T> {
 	public BetweenPath<T> betweenIfExist(T obj) {
 		Object arg = finderHandler.getPathInfo();
 		arg = arg == null ? obj : arg;
-		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler,
-				finderImpl, whereImpl, this, WherePathType.between, true, arg);
+		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler, finderImpl, whereImpl, this,
+				WherePathType.between, true, arg);
 		return betweenPath;
 	}
 
 	public BetweenPath<T> notBetweenIfExist(T obj) {
 		Object arg = finderHandler.getPathInfo();
 		arg = arg == null ? obj : arg;
-		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler,
-				finderImpl, whereImpl, this, WherePathType.notBetween, true,
-				arg);
+		BetweenPath<T> betweenPath = new BetweenPathImpl<T>(finderHandler, finderImpl, whereImpl, this,
+				WherePathType.notBetween, true, arg);
 		return betweenPath;
 	}
 
@@ -333,6 +331,166 @@ public class WherePathImpl<T> implements WherePath<T> {
 	public boolean equals(Object obj) {
 		throw new UnsupportedOperationException(
 				"The equals method is not supported, maybe you should use equal method");
+	}
+
+	@Override
+	public Where likeLeft(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.like, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.like, false, pathInfo);
+	}
+
+	@Override
+	public Where notLikeLeft(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notLike, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.notLike, false, pathInfo);
+	}
+
+	@Override
+	public Where likeRight(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.like, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.like, false, pathInfo);
+	}
+
+	@Override
+	public Where notLikeRight(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notLike, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.notLike, false, pathInfo);
+	}
+
+	@Override
+	public Where ilikeLeft(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.ilike, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.ilike, false, pathInfo);
+	}
+
+	@Override
+	public Where notILikeLeft(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notIlike, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.notIlike, false, pathInfo);
+	}
+
+	@Override
+	public Where ilikeRight(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.ilike, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.ilike, false, pathInfo);
+	}
+
+	@Override
+	public Where notILikeRight(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notIlike, false, obj + "%");
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.notIlike, false, pathInfo);
+	}
+
+	@Override
+	public Where likeLeftIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.like, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.like, true, pathInfo);
+	}
+
+	@Override
+	public Where notLikeLeftIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notLike, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.notLike, true, pathInfo);
+	}
+
+	@Override
+	public Where likeRightIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.like, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.like, true, pathInfo);
+	}
+
+	@Override
+	public Where notLikeRightIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notLike, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.notLike, true, pathInfo);
+	}
+
+	@Override
+	public Where ilikeLeftIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.ilike, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.ilike, true, pathInfo);
+	}
+
+	@Override
+	public Where notILikeLeftIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notIlike, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.leftLike);
+		return fillPath(WherePathType.notIlike, true, pathInfo);
+	}
+
+	@Override
+	public Where ilikeRightIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.ilike, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.ilike, true, pathInfo);
+	}
+
+	@Override
+	public Where notILikeRightIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notIlike, true, !_Helper.isEmpty(obj) ? obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.rightLike);
+		return fillPath(WherePathType.notIlike, true, pathInfo);
 	}
 
 }

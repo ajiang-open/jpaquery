@@ -18,7 +18,8 @@ public class QueryTest {
 		Student modelStudent = jpaQuery.from(Student.class);
 		jpaQuery.select(modelStudent.getName());
 		jpaQuery.select(modelStudent.getClazz());
-		jpaQuery.where(modelStudent.getClazz().getTeachers().get(100).getName()).equal("张三");
+		jpaQuery.where(modelStudent.getClazz().getTeachers().get(100).getName()).likeLeft(modelStudent.getName());
+		jpaQuery.where(modelStudent.getClazz().getTeachers().get(100).getName()).likeLeftIfExist("1");
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
 }

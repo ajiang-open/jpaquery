@@ -2,6 +2,7 @@ package com.jpaquery.core.vo;
 
 import java.lang.reflect.Method;
 
+import com.jpaquery.core.constant.LikeWay;
 import com.jpaquery.util._Helper;
 
 /**
@@ -32,11 +33,15 @@ public class PathInfo {
 	 * 路径构建
 	 */
 	StringBuilder pathBuilder;
-
 	/**
 	 * getter方法
 	 */
 	Method getter;
+
+	/**
+	 * 相似方式
+	 */
+	LikeWay likeWay;
 
 	public PathInfo(Object rootProxy, Object currentProxy, StringBuilder pathBuilder, Method getter) {
 		super();
@@ -74,6 +79,14 @@ public class PathInfo {
 
 	public Method getGetter() {
 		return getter;
+	}
+
+	public LikeWay getLikeWay() {
+		return likeWay;
+	}
+
+	public void setLikeWay(LikeWay likeWay) {
+		this.likeWay = likeWay;
 	}
 
 	public String toString() {
