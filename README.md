@@ -89,6 +89,16 @@ jpaQuery.where(modelUser.getCompany().getName()).equal(modelCompany.getName());
 ```sql
  user.company.name = company.name 
 ```
+# 左右Like查询
+```java
+String code = "00";
+jpaQuery.where(modelUser.getCompany().getName()).likeLeft(modelCompany.getName());
+jpaQuery.where(modelUser.getCompany().getName()).likeRightIfExists(code);
+```
+翻译之后的JPQL是：
+```sql
+user.company.name like concat(company.name,'%') and user.company.name like '%00'
+```
 # 执行查询及结果
 在Spring管理的任意Bean中，如果JPA环境有效，则可以通过如下方式获取EntityManager实例：
 ```java
