@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.jpaquery.core.Querys;
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.testcase.schema.Student;
+import com.jpaquery.testcase.schema.Teacher;
 
 public class QueryTest {
 
@@ -16,10 +17,8 @@ public class QueryTest {
 	public void test1() {
 		JpaQuery jpaQuery = Querys.newJpaQuery();
 		Student modelStudent = jpaQuery.from(Student.class);
-		jpaQuery.select(modelStudent.getName());
-		jpaQuery.select(modelStudent.getClazz());
-		jpaQuery.where(modelStudent.getClazz().getTeachers().get(100).getName()).likeLeft(modelStudent.getName());
-		jpaQuery.where(modelStudent.getClazz().getTeachers().get(100).getName()).likeLeftIfExist("1");
+		Teacher modelTeacher = jpaQuery.join(modelStudent.getTeachers()).left();
+		jpaQuery.on(modelTeacher).get(modelTeacher.getClazzs().get(0).getName()).equal("aaa");
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
 }

@@ -61,7 +61,7 @@ public class JoinImpl implements Join {
 	private <T> JoinPath<T> getJoinPath(T proxy) {
 		PathInfo pathInfo = finderHandler.getPathInfo();
 		Class<T> componentType = getComponentTypeByGetter(pathInfo.getGetter());
-		if (joinPathMap.containsKey(_Helper.identityHashCode(proxy))) {
+		if (!joinPathMap.containsKey(_Helper.identityHashCode(proxy))) {
 			// 为了性能最大化，尽量使用原有的代理对象，如果原代理对象已经被使用，则重新生成代理对象
 			proxy = finderHandler.proxy(null, componentType);
 		}
