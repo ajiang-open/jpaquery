@@ -17,8 +17,10 @@ public class QueryTest {
 	public void test1() {
 		JpaQuery jpaQuery = Querys.newJpaQuery();
 		Student modelStudent = jpaQuery.from(Student.class);
+		jpaQuery.select(modelStudent.getClazz());
 		Teacher modelTeacher = jpaQuery.join(modelStudent.getTeachers()).left();
 		jpaQuery.on(modelTeacher).get(modelTeacher.getClazzs().get(0).getName()).equal("aaa");
+		jpaQuery.where(modelStudent.getName()).equal("张三");
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
 }
