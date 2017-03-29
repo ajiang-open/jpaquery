@@ -8,14 +8,11 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jpaquery.core.facade.JpaQuery;
-import com.jpaquery.core.impl.JpaQueryImpl;
-import com.jpaquery.core.vo.FromInfo;
 import com.jpaquery.util._Helper;
 
 public class Example {
@@ -187,16 +184,17 @@ public class Example {
 	 *            样例对象
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> void toJpaQuery(JpaQuery jpaQuery, Object example) {
-		JpaQueryImpl jpaQueryImpl = (JpaQueryImpl) jpaQuery;
-		Iterator<FromInfo> iterator = jpaQueryImpl.froms().iterator();
-		if (!iterator.hasNext()) {
-			throw new IllegalStateException("The jpaQuery should from some entity class first");
-		}
-		T entityModel = (T) iterator.next().getEntityInfo().getProxy();
-		toJpaQuery(jpaQuery, example, entityModel);
-	}
+	// @SuppressWarnings("unchecked")
+	// public <T> void toJpaQuery(JpaQuery jpaQuery, Object example) {
+	// JpaQueryImpl jpaQueryImpl = (JpaQueryImpl) jpaQuery;
+	// Iterator<FromInfo> iterator = jpaQueryImpl.froms().iterator();
+	// if (!iterator.hasNext()) {
+	// throw new IllegalStateException("The jpaQuery should from some entity
+	// class first");
+	// }
+	// T entityModel = (T) iterator.next().getEntityInfo().getProxy();
+	// toJpaQuery(jpaQuery, example, entityModel);
+	// }
 
 	/**
 	 * 以样例填充Finder，除了Exampe的规则之外，仅对字符串、数字和日期类型有效
@@ -204,11 +202,11 @@ public class Example {
 	 * @param jpaQuery
 	 *            查找器
 	 * 
-	 * @param entityClass
-	 *            实体类型
-	 * 
 	 * @param example
 	 *            样例对象
+	 * 
+	 * @param entityModel
+	 *            实体模型代理对象
 	 * @return
 	 */
 	public <T> void toJpaQuery(JpaQuery jpaQuery, Object example, T entityModel) {
