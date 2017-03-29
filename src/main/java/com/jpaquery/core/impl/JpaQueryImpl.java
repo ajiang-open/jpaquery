@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.slf4j.Logger;
@@ -433,7 +434,11 @@ public class JpaQueryImpl implements JpaQuery {
 	@Override
 	public Object one(EntityManager em, boolean cacheable) {
 		Query query = createQuery(em, cacheable);
-		return query.getSingleResult();
+		try {
+			return query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	@Override
