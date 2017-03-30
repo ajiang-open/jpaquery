@@ -77,6 +77,10 @@ public class PathInfo {
 		return pathBuilder;
 	}
 
+	public void setGetter(Method getter) {
+		this.getter = getter;
+	}
+
 	public Method getGetter() {
 		return getter;
 	}

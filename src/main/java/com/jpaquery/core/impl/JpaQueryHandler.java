@@ -201,6 +201,7 @@ public class JpaQueryHandler {
 			pathInfo = new PathInfo(proxy, proxy, new StringBuilder().append(propertyName), getter);
 		} else {
 			pathInfo.setCurrentProxy(proxy);
+			pathInfo.setGetter(getter);
 			pathInfo.getPathBuilder().append('.');
 			pathInfo.getPathBuilder().append(propertyName);
 		}
