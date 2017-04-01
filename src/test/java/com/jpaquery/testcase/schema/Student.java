@@ -16,6 +16,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
+import com.jpaquery.testcase.Gender;
+
 @Entity
 @Table(indexes = {})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, include = "non-lazy")
@@ -40,6 +42,8 @@ public class Student extends IdEntity {
 			fetch = FetchType.LAZY)
 	List<Teacher> teachers;
 
+	Gender gender;
+
 	public String getName() {
 		return name;
 	}
@@ -62,6 +66,14 @@ public class Student extends IdEntity {
 
 	public void setTeachers(List<Teacher> teachers) {
 		this.teachers = teachers;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
 	@Override

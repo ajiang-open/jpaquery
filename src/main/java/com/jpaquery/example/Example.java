@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -222,7 +223,7 @@ public class Example {
 		String alias = jpaQuery.alias(entityModel);
 		AtomicInteger paramIndex = new AtomicInteger(0);
 		try {
-			toJpaQuery(new HashSet<Integer>(), null, example, jpaQuery, alias, paramIndex);
+			toJpaQuery(new HashSet<Integer>(), null, example, jpaQuery, alias, entityModel.getClass(), paramIndex);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalArgumentException e) {
@@ -253,7 +254,7 @@ public class Example {
 	 * @throws IntrospectionException
 	 */
 	private void toJpaQuery(Set<Integer> hashs, String prefixPath, Object example, JpaQuery jpaQuery, String alias,
-			AtomicInteger paramIndex)
+			Class<?> entityClass, AtomicInteger paramIndex)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		Integer hash = System.identityHashCode(example);
 		if (hashs.contains(hash)) {
@@ -264,11 +265,23 @@ public class Example {
 		PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(excludeProxy(example.getClass()))
 				.getPropertyDescriptors();
 
+		PropertyDescriptor[] entityPropertyDescriptors = Introspector.getBeanInfo(excludeProxy(entityClass))
+				.getPropertyDescriptors();
+		Map<String, PropertyDescriptor> entityPropertyDescriptorMap = new HashMap<>();
+		for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptors) {
+			entityPropertyDescriptorMap.put(entityPropertyDescriptor.getName(), entityPropertyDescriptor);
+		}
+
 		for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
 
 			Class<?> propertyType = propertyDescriptor.getPropertyType();
 
 			String path = propertyDescriptor.getName();
+
+			PropertyDescriptor entityPropertyDescriptor = entityPropertyDescriptorMap.get(path);
+			if (entityPropertyDescriptor == null) {
+				continue;
+			}
 
 			if (prefixPath != null) {
 				path = prefixPath.concat(".").concat(path);
@@ -323,8 +336,9 @@ public class Example {
 				jpaQuery.where().append(alias.concat(".").concat(path).concat(" = :").concat(name)).arg(name, value);
 			} else {
 				// 过滤数字和日期类型等其它类型
-				if (Number.class.isAssignableFrom(propertyType) || Boolean.class.equals(propertyType)
-						|| Character.class.equals(propertyType) || Date.class.isAssignableFrom(propertyType)) {
+				if (propertyType.isEnum() || Number.class.isAssignableFrom(propertyType)
+						|| Boolean.class.equals(propertyType) || Character.class.equals(propertyType)
+						|| Date.class.isAssignableFrom(propertyType)) {
 					jpaQuery.where().append(alias.concat(".").concat(path).concat(" = :").concat(name)).arg(name,
 							value);
 				} else {
@@ -340,7 +354,8 @@ public class Example {
 					if (Map.class.isAssignableFrom(propertyType)) {
 						continue;
 					}
-					toJpaQuery(hashs, path, value, jpaQuery, alias, paramIndex);
+					toJpaQuery(hashs, path, value, jpaQuery, alias, entityPropertyDescriptor.getPropertyType(),
+							paramIndex);
 				}
 			}
 		}
