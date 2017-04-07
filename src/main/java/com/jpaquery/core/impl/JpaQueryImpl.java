@@ -689,10 +689,7 @@ public class JpaQueryImpl implements JpaQuery {
 	}
 
 	public String toString() {
-		return "FinderImpl [subFinderImpls=" + subFinderImpls + ", finderHandler=" + finderHandler
-				+ ", parentFromInfos=" + parentFromInfos + ", currentFromInfos=" + currentFromInfos + ", finderRender="
-				+ finderRender + ", selectImpl=" + selectImpl + ", whereImpl=" + whereImpl + ", orderImpl=" + orderImpl
-				+ ", groupImpl=" + groupImpl + ", havingImpl=" + havingImpl + ", joinImpl=" + joinImpl + "]";
+		return "JpaQuery[" + hashCode() + "]";
 	}
 
 }
