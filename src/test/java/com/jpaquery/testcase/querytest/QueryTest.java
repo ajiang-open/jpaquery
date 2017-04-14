@@ -8,6 +8,7 @@ import com.jpaquery.core.Querys;
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.testcase.schema.Clazz;
 import com.jpaquery.testcase.schema.Student;
+import com.jpaquery.testcase.schema.Teacher;
 
 public class QueryTest {
 
@@ -24,7 +25,7 @@ public class QueryTest {
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
 
-	@Test
+	// @Test
 	public void test2() {
 		JpaQuery jpaQuery = Querys.newJpaQuery();
 		Clazz modelClazz = jpaQuery.from(Clazz.class);
@@ -35,6 +36,25 @@ public class QueryTest {
 			subJpaQuery.select(modelStudent.getId());
 			jpaQuery.where().exists(subJpaQuery);
 		}
+		logger.info(jpaQuery.toQueryContent().toString());
+	}
+
+	/**
+	 * 多级Join展示
+	 */
+	@Test
+	public void test3() {
+		JpaQuery jpaQuery = Querys.newJpaQuery();
+		Student modelStudent = jpaQuery.from(Student.class);
+		{
+			Clazz modelClazz = jpaQuery.join(modelStudent.getClazz()).left();
+			jpaQuery.on(modelClazz).get(modelClazz.getName()).equal("aaa");
+			{
+				Teacher modelTeacher = jpaQuery.join(modelClazz.getTeachers()).inner();
+				jpaQuery.on(modelTeacher).get(modelTeacher.getName()).equal("Miss Wang");
+			}
+		}
+		jpaQuery.where(modelStudent.getName()).equal("张三");
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
 }

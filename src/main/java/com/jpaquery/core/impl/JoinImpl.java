@@ -69,15 +69,20 @@ public class JoinImpl implements Join {
 		EntityInfo<T> entityInfo = new EntityInfo<T>(finderHandler, componentType, proxy);
 		JoinPathImpl<T> joinPath = new JoinPathImpl<T>(finderHandler, finderImpl, this, entityInfo, pathInfo);
 		FromInfo fromInfo = finderImpl.getCurrentFromInfos().get(pathInfo.getRootKey());
-		fromInfo.getJoinPaths().add(joinPath);
-		// 特设带JoinPath的ID的别名以示和正常实体类型的区别
-		// entityInfo.setAlias(entityInfo
-		// .getAlias()
-		// .concat("_")
-		// .concat(String.valueOf(finderHandler
-		// .generateEntityIndex(JoinPathImpl.class))));
-		joinPathMap.put(entityInfo.getKey(), joinPath);
+		if (fromInfo != null) {
+			fromInfo.getJoinPaths().add(joinPath);
+			joinPath.setFromInfo(fromInfo);
+			joinPath.getWhereImpl().getEntityInfoMap().put(entityInfo.getKey(), entityInfo);
+		} else {
+			JoinPathImpl<?> preJoinPath = joinPathMap.get(pathInfo.getRootKey());
+			if (preJoinPath != null) {
+				preJoinPath.getFromInfo().getJoinPaths().add(joinPath);
+				joinPath.getWhereImpl().getEntityInfoMap().putAll(preJoinPath.getWhereImpl().getEntityInfoMap());
+				joinPath.setFromInfo(preJoinPath.getFromInfo());
+			}
+		}
 		joinPath.getWhereImpl().getEntityInfoMap().put(entityInfo.getKey(), entityInfo);
+		joinPathMap.put(entityInfo.getKey(), joinPath);
 		finderImpl.getSelectImpl().getEntityInfoMap().put(entityInfo.getKey(), entityInfo);
 		return joinPath;
 	}

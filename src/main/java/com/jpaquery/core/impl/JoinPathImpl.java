@@ -5,12 +5,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.jpaquery.core.facade.JoinPath;
 import com.jpaquery.core.facade.Where.WhereType;
 import com.jpaquery.core.vo.EntityInfo;
+import com.jpaquery.core.vo.FromInfo;
 import com.jpaquery.core.vo.PathInfo;
 
 public class JoinPathImpl<T> implements JoinPath<T> {
 
 	JpaQueryHandler finderHandler;
 	JpaQueryImpl finderImpl;
+	FromInfo fromInfo;
 	JoinImpl joinImpl;
 	EntityInfo<T> entityInfo;
 	PathInfo pathInfo;
@@ -23,6 +25,14 @@ public class JoinPathImpl<T> implements JoinPath<T> {
 
 	public JpaQueryImpl getFinderImpl() {
 		return finderImpl;
+	}
+
+	public FromInfo getFromInfo() {
+		return fromInfo;
+	}
+
+	public void setFromInfo(FromInfo fromInfo) {
+		this.fromInfo = fromInfo;
 	}
 
 	public JoinImpl getJoinImpl() {
@@ -45,16 +55,16 @@ public class JoinPathImpl<T> implements JoinPath<T> {
 		return whereImpl;
 	}
 
-	public JoinPathImpl(JpaQueryHandler finderHandler, JpaQueryImpl finderImpl,
-			JoinImpl joinImpl, EntityInfo<T> entityInfo, PathInfo pathInfo) {
+	public JoinPathImpl(JpaQueryHandler finderHandler, JpaQueryImpl finderImpl, JoinImpl joinImpl,
+			EntityInfo<T> entityInfo, PathInfo pathInfo) {
 		super();
 		this.finderHandler = finderHandler;
 		this.finderImpl = finderImpl;
 		this.joinImpl = joinImpl;
 		this.entityInfo = entityInfo;
 		this.pathInfo = pathInfo;
-		this.whereImpl = new WhereImpl(finderHandler, finderImpl,
-				WhereType.and, new ConcurrentHashMap<Long, EntityInfo<?>>());
+		this.whereImpl = new WhereImpl(finderHandler, finderImpl, WhereType.and,
+				new ConcurrentHashMap<Long, EntityInfo<?>>());
 	}
 
 	public T inner() {

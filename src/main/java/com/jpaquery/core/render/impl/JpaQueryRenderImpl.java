@@ -83,7 +83,8 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 		QueryContent queryContent = new QueryContent();
 		queryContent.append(joinPathImpl.getJoinPathType().name());
 		queryContent.append(" join ");
-		queryContent.append(toPathArg(finderImpl, null, joinPathImpl.getPathInfo()));
+		queryContent.append(
+				toPathArg(finderImpl, joinPathImpl.getWhereImpl().getEntityInfoMap(), joinPathImpl.getPathInfo()));
 		queryContent.append(" as ");
 		queryContent.append(joinPathImpl.getEntityInfo().getAlias());
 		QueryContent whereQueryContent = toWhere(finderImpl, joinPathImpl.getWhereImpl());
@@ -462,7 +463,6 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 			EntityInfo<?> entityInfo = null;
 			if (fromInfo == null && entityInfoMap != null) {
 				entityInfo = entityInfoMap.get(pathInfo.getRootKey());
-
 			} else if (fromInfo != null) {
 				entityInfo = fromInfo.getEntityInfo();
 			}
