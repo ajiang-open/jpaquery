@@ -2,6 +2,7 @@ package com.jpaquery.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class _MergeMap<K, V> extends AbstractMap<K, V> {
 	/**
 	 * 其它引用的Map
 	 */
-	Set<Map<K, V>> others = new HashSet<>();
+	Set<Map<K, V>> others = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	/**
 	 * 自身Map
