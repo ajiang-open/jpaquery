@@ -1,12 +1,11 @@
 package com.jpaquery.core.impl;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.jpaquery.core.facade.JoinPath;
 import com.jpaquery.core.facade.Where.WhereType;
 import com.jpaquery.core.vo.EntityInfo;
 import com.jpaquery.core.vo.FromInfo;
 import com.jpaquery.core.vo.PathInfo;
+import com.jpaquery.util._MergeMap;
 
 public class JoinPathImpl<T> implements JoinPath<T> {
 
@@ -63,8 +62,7 @@ public class JoinPathImpl<T> implements JoinPath<T> {
 		this.joinImpl = joinImpl;
 		this.entityInfo = entityInfo;
 		this.pathInfo = pathInfo;
-		this.whereImpl = new WhereImpl(finderHandler, finderImpl, WhereType.and,
-				new ConcurrentHashMap<Long, EntityInfo<?>>());
+		this.whereImpl = new WhereImpl(finderHandler, finderImpl, WhereType.and, new _MergeMap<Long, EntityInfo<?>>());
 	}
 
 	public T inner() {

@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -155,9 +154,8 @@ public class JpaQueryImpl implements JpaQuery {
 		this.finderHandler = finderHandler;
 		this.finderRender = finderRender;
 		// 初始化子句
-		selectImpl = new SelectImpl(finderHandler, this, new ConcurrentHashMap<Long, EntityInfo<?>>());
-		whereImpl = new WhereImpl(finderHandler, this, Where.WhereType.and,
-				new ConcurrentHashMap<Long, EntityInfo<?>>());
+		selectImpl = new SelectImpl(finderHandler, this, new _MergeMap<Long, EntityInfo<?>>());
+		whereImpl = new WhereImpl(finderHandler, this, Where.WhereType.and, new _MergeMap<Long, EntityInfo<?>>());
 		orderImpl = new OrderImpl(finderHandler, this);
 		groupImpl = new GroupImpl(finderHandler, this);
 		havingImpl = new HavingImpl(finderHandler, this);
