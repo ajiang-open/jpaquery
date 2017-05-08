@@ -1,4 +1,4 @@
-package com.jpaquery.testcase.schema;
+package com.testcase.jpaquery.schema;
 
 import java.util.UUID;
 

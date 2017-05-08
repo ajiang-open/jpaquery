@@ -5,4 +5,4 @@
  * @author lujijiang
  *
  */
-package com.jpaquery.testcase.vo;
+package com.testcase.jpaquery.vo;

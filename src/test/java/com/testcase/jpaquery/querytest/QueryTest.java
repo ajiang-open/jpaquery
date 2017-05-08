@@ -1,4 +1,4 @@
-package com.jpaquery.testcase.querytest;
+package com.testcase.jpaquery.querytest;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jpaquery.core.Querys;
 import com.jpaquery.core.facade.JpaQuery;
-import com.jpaquery.testcase.schema.Clazz;
-import com.jpaquery.testcase.schema.Student;
-import com.jpaquery.testcase.schema.Teacher;
+import com.testcase.jpaquery.schema.Clazz;
+import com.testcase.jpaquery.schema.Student;
+import com.testcase.jpaquery.schema.Teacher;
 
 public class QueryTest {
 

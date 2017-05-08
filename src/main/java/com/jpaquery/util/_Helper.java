@@ -160,4 +160,33 @@ public class _Helper {
 		}
 		return Object.class;
 	}
+
+	/**
+	 * 查找调用者
+	 * 
+	 * @param excludeBasePackage
+	 *            过滤基础包名
+	 * @return 返回基础包之外的首个调用者
+	 */
+	public static String findCaller(String excludeBasePackage) {
+		String caller = "<UnkownCaller>";
+		StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
+		for (StackTraceElement stackTraceElement : stackTraceElements) {
+			if (!stackTraceElement.getClassName().startsWith(excludeBasePackage)) {
+				caller = stackTraceElement.getClassName().concat(".").concat(stackTraceElement.getMethodName())
+						.concat(":").concat(String.valueOf(stackTraceElement.getLineNumber()));
+				break;
+			}
+		}
+		return caller;
+	}
+
+	/**
+	 * 查找调用者
+	 * 
+	 * @return 返回非JpaQuery本身的调用者
+	 */
+	public static String findCaller() {
+		return findCaller("com.jpaquery");
+	}
 }

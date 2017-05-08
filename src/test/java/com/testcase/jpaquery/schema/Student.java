@@ -1,4 +1,4 @@
-package com.jpaquery.testcase.schema;
+package com.testcase.jpaquery.schema;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
-import com.jpaquery.testcase.Gender;
+import com.testcase.jpaquery.Gender;
 
 @Entity
 @Table(indexes = {})

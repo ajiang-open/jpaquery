@@ -386,7 +386,10 @@ public class JpaQueryImpl implements JpaQuery {
 	 * @return
 	 */
 	private Query createQuery(EntityManager em, QueryContent queryContent) {
-		logger.debug("JPQL:{}", queryContent);
+		if (logger.isDebugEnabled()) {
+			String caller = _Helper.findCaller();
+			logger.debug("JPQL({}):{}", caller, queryContent);
+		}
 		Query query = em.createQuery(queryContent.getQueryString());
 		for (String name : queryContent.getArguments().keySet()) {
 			Object arg = queryContent.getArguments().get(name);

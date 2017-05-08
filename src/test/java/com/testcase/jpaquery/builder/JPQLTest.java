@@ -1,4 +1,4 @@
-package com.jpaquery.testcase.builder;
+package com.testcase.jpaquery.builder;
 
 import org.junit.Test;
 

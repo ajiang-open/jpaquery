@@ -1,4 +1,4 @@
-package com.jpaquery.testcase;
+package com.testcase.jpaquery;
 
 public enum Gender {
 	male, female
