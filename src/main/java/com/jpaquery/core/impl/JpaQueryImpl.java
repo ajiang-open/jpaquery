@@ -28,6 +28,7 @@ import com.jpaquery.core.facade.HavingPath;
 import com.jpaquery.core.facade.Join;
 import com.jpaquery.core.facade.JoinPath;
 import com.jpaquery.core.facade.JpaQuery;
+import com.jpaquery.core.facade.JpaQueryEach;
 import com.jpaquery.core.facade.Or;
 import com.jpaquery.core.facade.Order;
 import com.jpaquery.core.facade.OrderPath;
@@ -54,6 +55,10 @@ import com.jpaquery.util._MergeMap;
 public class JpaQueryImpl implements JpaQuery {
 
 	private static final Logger logger = LoggerFactory.getLogger(JpaQueryImpl.class);
+	/**
+	 * each遍历时每次查询的数量
+	 */
+	private static final int EACH_SIZE = 100;
 	/**
 	 * 子查询
 	 */
@@ -691,6 +696,25 @@ public class JpaQueryImpl implements JpaQuery {
 
 	public String toString() {
 		return "JpaQuery[" + hashCode() + "]";
+	}
+
+	@Override
+	public <T> void each(EntityManager em, JpaQueryEach<T> each) {
+		each(em, each, false);
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	@Override
+	public <T> void each(EntityManager em, JpaQueryEach<T> each, boolean cacheable) {
+		for (int i = 0;; i += EACH_SIZE) {
+			List<T> list = (List<T>) list(em, i, EACH_SIZE, cacheable);
+			if (list.isEmpty()) {
+				break;
+			}
+			for (T entity : list) {
+				each.handle(entity);
+			}
+		}
 	}
 
 }

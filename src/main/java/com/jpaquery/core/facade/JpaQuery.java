@@ -259,6 +259,25 @@ public interface JpaQuery extends QueryRender {
 	public List<?> top(EntityManager em, int top, boolean cacheable);
 
 	/**
+	 * 遍历所有结果
+	 * 
+	 * @param em
+	 * @param each
+	 * @return
+	 */
+	public <T> void each(EntityManager em, JpaQueryEach<T> each);
+
+	/**
+	 * 遍历所有结果
+	 * 
+	 * @param em
+	 * @param each
+	 * @param cacheable
+	 * @return
+	 */
+	public <T> void each(EntityManager em, JpaQueryEach<T> each, boolean cacheable);
+
+	/**
 	 * 查询指定页面的结果
 	 * 
 	 * @param em
