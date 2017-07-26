@@ -10,11 +10,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory;
+import org.hibernate.hql.spi.QueryTranslator;
+import org.hibernate.hql.spi.QueryTranslatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -50,9 +57,9 @@ import com.jpaquery.util._MergeMap;
 
 /**
  * Finder实现类
- * 
+ *
  * @author lujijiang
- * 
+ *
  */
 public class JpaQueryImpl implements JpaQuery {
 
@@ -248,7 +255,7 @@ public class JpaQueryImpl implements JpaQuery {
 
 	/**
 	 * 生成QueryContent
-	 * 
+	 *
 	 * @param countSwich
 	 *            是否是统计查询
 	 * @return
@@ -262,18 +269,8 @@ public class JpaQueryImpl implements JpaQuery {
 		// select
 		QueryContent selectQueryContent = selectImpl.toQueryContent();
 		if (selectQueryContent != null) {
-			if (countSwich) {
-				queryContent.append("select count(");
-				queryContent.append(finderRender.toSelectCount(this, selectImpl));
-				queryContent.append(")");
-			} else {
-				queryContent.append("select ");
-				queryContent.append(selectQueryContent);
-			}
-		} else {
-			if (countSwich) {
-				queryContent.append("select count(*) ");
-			}
+			queryContent.append("select ");
+			queryContent.append(selectQueryContent);
 		}
 
 		// from
@@ -378,7 +375,7 @@ public class JpaQueryImpl implements JpaQuery {
 	// 特设附加方法
 	/**
 	 * 获取所有From对象
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<FromInfo> froms() {
@@ -387,7 +384,7 @@ public class JpaQueryImpl implements JpaQuery {
 
 	/**
 	 * 根据查询内容创建查询对象
-	 * 
+	 *
 	 * @param em
 	 * @param queryContent
 	 * @return
@@ -424,13 +421,33 @@ public class JpaQueryImpl implements JpaQuery {
 
 	/**
 	 * 生成统计专用的查询对象
-	 * 
-	 * @param finder
+	 *
+	 * @param em
 	 * @return
 	 */
 	private Query createCountQuery(EntityManager em) {
 		QueryContent queryContent = toCountQueryContent();
-		Query query = createQuery(em, queryContent);
+		String hql = queryContent.getQueryString();
+		List<Object> argList = new ArrayList<>();
+		Pattern pattern = Pattern.compile(":[a-zA-Z0-9_]+");
+		Matcher matcher = pattern.matcher(hql);
+		while (matcher.find()) {
+			String group = matcher.group();
+			String name = group.substring(1);
+			argList.add(queryContent.getArguments().get(name));
+		}
+		Session session = em.unwrap(Session.class);
+		QueryTranslatorFactory translatorFactory = new ASTQueryTranslatorFactory();
+		SessionFactoryImplementor factory = (SessionFactoryImplementor) session.getSessionFactory();
+		QueryTranslator translator = translatorFactory.createQueryTranslator(hql, hql, Collections.EMPTY_MAP, factory,
+				null);
+		translator.compile(Collections.EMPTY_MAP, false);
+		String sql = translator.getSQLString();
+		sql = "SELECT COUNT(1) FROM (" + sql + ") TMP";
+		Query query = em.createNativeQuery(sql);
+		for (int i = 0; i < argList.size(); i++) {
+			query.setParameter(i + 1, argList.get(i));
+		}
 		return query;
 	}
 
@@ -564,7 +581,7 @@ public class JpaQueryImpl implements JpaQuery {
 
 	/**
 	 * 追加search信息给Finder
-	 * 
+	 *
 	 * @param searchMap
 	 */
 	private void appendSearchMapToFinder(JpaQuery finder, Map<String, Object> searchMap) {
@@ -610,7 +627,7 @@ public class JpaQueryImpl implements JpaQuery {
 
 	/**
 	 * 将排序信息追加到Finder中，注意Finder将会被改变
-	 * 
+	 *
 	 * @param finder
 	 * @param sort
 	 */
@@ -646,7 +663,7 @@ public class JpaQueryImpl implements JpaQuery {
 
 	/**
 	 * 追加globalSearch信息给Finder
-	 * 
+	 *
 	 * @param globalSearchMap
 	 */
 	private void appendGlobalSearchMapToFinder(JpaQuery finder, Map<String, Object> globalSearchMap) {

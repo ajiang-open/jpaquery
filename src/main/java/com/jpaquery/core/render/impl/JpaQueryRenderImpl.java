@@ -501,6 +501,9 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 			} catch (IllegalStateException e) {
 				String name = finderImpl.getFinderHandler().generateParamName();
 				Map<String, Object> argMap = new ConcurrentHashMap<String, Object>();
+				if (arg != null && arg instanceof String) {
+					arg = ((String) arg).trim();
+				}
 				argMap.put(name, arg);
 				queryContent.append(":".concat(name), argMap);
 			}
