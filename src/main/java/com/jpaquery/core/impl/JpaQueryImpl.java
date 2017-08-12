@@ -446,7 +446,13 @@ public class JpaQueryImpl implements JpaQuery {
 		sql = "SELECT COUNT(1) FROM (" + sql + ") TMP";
 		Query query = em.createNativeQuery(sql);
 		for (int i = 0; i < argList.size(); i++) {
-			query.setParameter(i + 1, argList.get(i));
+			Object arg = argList.get(i);
+			if (arg != null) {
+				if (arg.getClass().isEnum()) {
+					arg = ((Enum) arg).name();
+				}
+			}
+			query.setParameter(i + 1, arg);
 		}
 		return query;
 	}
