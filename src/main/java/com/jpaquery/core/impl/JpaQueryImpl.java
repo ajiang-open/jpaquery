@@ -1,13 +1,11 @@
 package com.jpaquery.core.impl;
 
 import java.sql.Timestamp;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -477,39 +475,10 @@ public class JpaQueryImpl implements JpaQuery {
 		return list(em, false);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public List<?> list(EntityManager em, boolean cacheable) {
-		final Query query = createQuery(em, cacheable);
-		return new AbstractList() {
-
-			List<?> list;
-
-			@Override
-			public Object get(int index) {
-				if (list == null) {
-					list = query.getResultList();
-				}
-				return list.get(index);
-			}
-
-			@Override
-			public int size() {
-				if (list == null) {
-					return (int) count(em);
-				}
-				return list.size();
-			}
-
-			@Override
-			public Iterator iterator() {
-				if (list == null) {
-					list = query.getResultList();
-				}
-				return list.iterator();
-			}
-
-		};
+		Query query = createQuery(em, cacheable);
+		return query.getResultList();
 	}
 
 	private void cacheable(Query query, boolean cacheable) {
