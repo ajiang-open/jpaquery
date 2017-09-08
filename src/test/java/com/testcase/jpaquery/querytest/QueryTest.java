@@ -65,7 +65,7 @@ public class QueryTest {
 		jpaQuery.select(modelStudent.getClazz());
 		Clazz modelClazz = jpaQuery.join(modelStudent.getTeachers().get(0).getClazzs()).left();
 		jpaQuery.on(modelClazz).get(modelClazz.getName()).equal("aaa");
-		jpaQuery.where(modelStudent.getName()).notIlikeAll("张三");
+		jpaQuery.where(modelStudent.getName()).likeAllIfExist("张三");
 		jpaQuery.where(modelStudent.getName()).likeAll(modelStudent.getClazz().getName());
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
