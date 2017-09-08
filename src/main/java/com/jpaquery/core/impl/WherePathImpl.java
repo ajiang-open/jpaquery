@@ -493,4 +493,84 @@ public class WherePathImpl<T> implements WherePath<T> {
 		return fillPath(WherePathType.notIlike, true, pathInfo);
 	}
 
+	@Override
+	public Where likeAll(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.like, false, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.like, false, pathInfo);
+	}
+
+	@Override
+	public Where notLikeAll(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notLike, false, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.notLike, false, pathInfo);
+	}
+
+	@Override
+	public Where ilikeAll(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.ilike, false, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.ilike, false, pathInfo);
+	}
+
+	@Override
+	public Where notIlikeAll(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notIlike, false, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.notIlike, false, pathInfo);
+	}
+
+	@Override
+	public Where likeAllIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.like, true, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.like, true, pathInfo);
+	}
+
+	@Override
+	public Where notLikeAllIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notLike, true, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.notLike, true, pathInfo);
+	}
+
+	@Override
+	public Where ilikeAllIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.ilike, true, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.ilike, true, pathInfo);
+	}
+
+	@Override
+	public Where notILikeAllIfExist(T obj) {
+		PathInfo pathInfo = finderHandler.getPathInfo();
+		if (pathInfo == null) {
+			return fillPath(WherePathType.notIlike, true, !_Helper.isEmpty(obj) ? "%" + obj + "%" : null);
+		}
+		pathInfo.setLikeWay(LikeWay.allLike);
+		return fillPath(WherePathType.notIlike, true, pathInfo);
+	}
+
 }

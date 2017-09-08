@@ -42,7 +42,7 @@ public class QueryTest {
 	/**
 	 * 多级Join展示
 	 */
-	@Test
+	// @Test
 	public void test3() {
 		JpaQuery jpaQuery = Querys.newJpaQuery();
 		Student modelStudent = jpaQuery.from(Student.class);
@@ -55,6 +55,18 @@ public class QueryTest {
 			}
 		}
 		jpaQuery.where(modelStudent.getName()).equal("张三");
+		logger.info(jpaQuery.toQueryContent().toString());
+	}
+
+	@Test
+	public void test4() {
+		JpaQuery jpaQuery = Querys.newJpaQuery();
+		Student modelStudent = jpaQuery.from(Student.class);
+		jpaQuery.select(modelStudent.getClazz());
+		Clazz modelClazz = jpaQuery.join(modelStudent.getTeachers().get(0).getClazzs()).left();
+		jpaQuery.on(modelClazz).get(modelClazz.getName()).equal("aaa");
+		jpaQuery.where(modelStudent.getName()).notIlikeAll("张三");
+		jpaQuery.where(modelStudent.getName()).likeAll(modelStudent.getClazz().getName());
 		logger.info(jpaQuery.toQueryContent().toString());
 	}
 }

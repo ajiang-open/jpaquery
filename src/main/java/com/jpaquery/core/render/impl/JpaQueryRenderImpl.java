@@ -473,13 +473,13 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 			if (pathInfo.getLikeWay() != null) {
 				queryContent.append("concat(");
 			}
-			if (LikeWay.rightLike.equals(pathInfo.getLikeWay())) {
+			if (LikeWay.rightLike.equals(pathInfo.getLikeWay()) || LikeWay.allLike.equals(pathInfo.getLikeWay())) {
 				queryContent.append("'%',");
 			}
 			queryContent.append(entityInfo.getAlias());
 			queryContent.append(".");
 			queryContent.append(pathInfo.getPathBuilder().toString());
-			if (LikeWay.leftLike.equals(pathInfo.getLikeWay())) {
+			if (LikeWay.leftLike.equals(pathInfo.getLikeWay()) || LikeWay.allLike.equals(pathInfo.getLikeWay())) {
 				queryContent.append(",'%'");
 			}
 			if (pathInfo.getLikeWay() != null) {
