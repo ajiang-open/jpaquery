@@ -505,7 +505,11 @@ public class JpaQueryImpl implements JpaQuery {
 			public int size() {
 				synchronized (this) {
 					if (count < 0) {
-						if (page == 0 && data != null && data.size() < EACH_SIZE) {
+						if (data == null) {
+							page = 0;
+							data = list(em, page * EACH_SIZE, EACH_SIZE, cacheable);
+						}
+						if (page == 0 && data.size() < EACH_SIZE) {
 							count = data.size();
 						} else {
 							count = (int) count(em);
