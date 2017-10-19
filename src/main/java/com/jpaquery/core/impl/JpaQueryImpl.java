@@ -66,7 +66,7 @@ public class JpaQueryImpl implements JpaQuery {
 	/**
 	 * each遍历时每次查询的数量
 	 */
-	private static final int EACH_SIZE = 100;
+	private static final int EACH_SIZE = 1024;
 	/**
 	 * 子查询
 	 */
