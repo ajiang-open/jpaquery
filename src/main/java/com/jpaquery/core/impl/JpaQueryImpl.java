@@ -1,6 +1,7 @@
 package com.jpaquery.core.impl;
 
 import java.sql.Timestamp;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -477,8 +478,43 @@ public class JpaQueryImpl implements JpaQuery {
 
 	@Override
 	public List<?> list(EntityManager em, boolean cacheable) {
-		Query query = createQuery(em, cacheable);
-		return query.getResultList();
+		return new AbstractList<Object>() {
+			int count = -1;
+			List<?> data;
+			int page = -1;
+
+			@Override
+			public Object get(int index) {
+				synchronized (this) {
+					if (index < 0 || (count >= 0 && index >= count)) {
+						throw new IndexOutOfBoundsException("Index: " + index + ",Size:" + size());
+					}
+					if (page != index / EACH_SIZE) {
+						page = index / EACH_SIZE;
+						data = list(em, page * EACH_SIZE, EACH_SIZE, cacheable);
+					}
+					try {
+						return data.get(index - page * EACH_SIZE);
+					} catch (IndexOutOfBoundsException e) {
+						throw new IndexOutOfBoundsException("Index: " + index + ",Size:" + size());
+					}
+				}
+			}
+
+			@Override
+			public int size() {
+				synchronized (this) {
+					if (count < 0) {
+						if (page == 0 && data != null && data.size() < EACH_SIZE) {
+							count = data.size();
+						} else {
+							count = (int) count(em);
+						}
+					}
+					return count;
+				}
+			}
+		};
 	}
 
 	private void cacheable(Query query, boolean cacheable) {
