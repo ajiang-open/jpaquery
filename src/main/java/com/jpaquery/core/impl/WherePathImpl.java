@@ -176,11 +176,19 @@ public class WherePathImpl<T> implements WherePath<T> {
 
 	public Where in(T... objs) {
 		Object arg = finderHandler.getPathInfo();
+		if (arg != null && objs != null && objs.length > 1) {
+			throw new IllegalArgumentException(
+					"In clause, only one path parameter is allowed and can not coexist with the value parameter");
+		}
 		return fillPath(WherePathType.in, false, arg == null ? objs : arg);
 	}
 
 	public Where notIn(T... objs) {
 		Object arg = finderHandler.getPathInfo();
+		if (arg != null && objs != null && objs.length > 1) {
+			throw new IllegalArgumentException(
+					"In clause, only one path parameter is allowed and can not coexist with the value parameter");
+		}
 		return fillPath(WherePathType.notIn, false, arg == null ? objs : arg);
 	}
 

@@ -20,6 +20,7 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory;
 import org.hibernate.hql.spi.QueryTranslator;
 import org.hibernate.hql.spi.QueryTranslatorFactory;
+import org.hibernate.query.NativeQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -442,7 +443,16 @@ public class JpaQueryImpl implements JpaQuery {
 		translator.compile(Collections.EMPTY_MAP, false);
 		String sql = translator.getSQLString();
 		sql = "SELECT COUNT(1) FROM (" + sql + ") TMP";
-		Query query = em.createNativeQuery(sql);
+		Pattern questionMaskPattern = Pattern.compile("\\?");
+		StringBuffer stringBuffer = new StringBuffer();
+		Matcher questionMaskMatcher = questionMaskPattern.matcher(sql);
+		int k = 0;
+		while (questionMaskMatcher.find()) {
+			questionMaskMatcher.appendReplacement(stringBuffer, ":p" + k);
+		}
+		questionMaskMatcher.appendTail(stringBuffer);
+		sql = stringBuffer.toString();
+		NativeQuery<?> query = session.createNativeQuery(sql);
 		for (int i = 0; i < argList.size(); i++) {
 			Object arg = argList.get(i);
 			if (arg != null) {
@@ -450,7 +460,12 @@ public class JpaQueryImpl implements JpaQuery {
 					arg = ((Enum) arg).name();
 				}
 			}
-			query.setParameter(i + 1, arg);
+			if (arg != null && arg instanceof Collection) {
+				query.setParameterList("p" + i, (Collection) arg);
+			} else {
+				query.setParameter("p" + i, arg);
+			}
+
 		}
 		return query;
 	}
@@ -535,8 +550,7 @@ public class JpaQueryImpl implements JpaQuery {
 		// appendGlobalSearchMapToFinder(finder, globalSearchMap);
 		// }
 
-		long total = countSwitch == null || countSwitch ? ((Number) createCountQuery(em).getSingleResult()).longValue()
-				: -1;
+		long total = countSwitch == null || countSwitch ? count(em) : -1;
 
 		List<?> content;
 

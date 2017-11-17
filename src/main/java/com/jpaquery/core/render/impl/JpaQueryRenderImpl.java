@@ -281,14 +281,32 @@ public class JpaQueryRenderImpl implements JpaQueryRender {
 		if (!flag) {
 			queryContent.append(" not");
 		}
-		queryContent.append(" in (");
+
+		boolean isComplex = false;
+
 		for (int i = 0; i < argList.size(); i++) {
-			if (i > 0) {
-				queryContent.append(",");
+			Object arg = argList.get(i);
+			if (arg != null) {
+				if (arg instanceof PathInfo || arg instanceof JpaQueryImpl) {
+					isComplex = true;
+					break;
+				}
 			}
-			queryContent.append(toPathArg(finderImpl, wherePathImpl.getWhereImpl().getEntityInfoMap(), argList.get(i)));
 		}
-		queryContent.append(")");
+		if (isComplex) {
+			queryContent.append(" in (");
+			for (int i = 0; i < argList.size(); i++) {
+				if (i > 0) {
+					queryContent.append(",");
+				}
+				queryContent
+						.append(toPathArg(finderImpl, wherePathImpl.getWhereImpl().getEntityInfoMap(), argList.get(i)));
+			}
+			queryContent.append(")");
+		} else {
+			queryContent.append(" in ");
+			queryContent.append(toPathArg(finderImpl, wherePathImpl.getWhereImpl().getEntityInfoMap(), argList));
+		}
 		return queryContent;
 	}
 
