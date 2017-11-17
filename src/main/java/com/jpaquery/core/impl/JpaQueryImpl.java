@@ -450,6 +450,7 @@ public class JpaQueryImpl implements JpaQuery {
 			int i = 0;
 			while (questionMaskMatcher.find()) {
 				questionMaskMatcher.appendReplacement(stringBuffer, ":p" + i);
+				i++;
 			}
 			questionMaskMatcher.appendTail(stringBuffer);
 			sql = stringBuffer.toString();
