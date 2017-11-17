@@ -443,15 +443,17 @@ public class JpaQueryImpl implements JpaQuery {
 		translator.compile(Collections.EMPTY_MAP, false);
 		String sql = translator.getSQLString();
 		sql = "SELECT COUNT(1) FROM (" + sql + ") TMP";
-		Pattern questionMaskPattern = Pattern.compile("\\?");
-		StringBuffer stringBuffer = new StringBuffer();
-		Matcher questionMaskMatcher = questionMaskPattern.matcher(sql);
-		int k = 0;
-		while (questionMaskMatcher.find()) {
-			questionMaskMatcher.appendReplacement(stringBuffer, ":p" + k);
+		{
+			Pattern questionMaskPattern = Pattern.compile("\\?");
+			StringBuffer stringBuffer = new StringBuffer();
+			Matcher questionMaskMatcher = questionMaskPattern.matcher(sql);
+			int i = 0;
+			while (questionMaskMatcher.find()) {
+				questionMaskMatcher.appendReplacement(stringBuffer, ":p" + i);
+			}
+			questionMaskMatcher.appendTail(stringBuffer);
+			sql = stringBuffer.toString();
 		}
-		questionMaskMatcher.appendTail(stringBuffer);
-		sql = stringBuffer.toString();
 		NativeQuery<?> query = session.createNativeQuery(sql);
 		for (int i = 0; i < argList.size(); i++) {
 			Object arg = argList.get(i);
