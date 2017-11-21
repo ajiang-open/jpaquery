@@ -464,7 +464,15 @@ public class JpaQueryImpl implements JpaQuery {
 				}
 			}
 			if (arg != null && arg instanceof Collection) {
-				query.setParameterList("p" + i, (Collection) arg);
+				Collection argCollection = (Collection) arg;
+				List<Object> list = new ArrayList<>();
+				for (Object obj : argCollection) {
+					if (obj != null && obj.getClass().isEnum()) {
+						obj = ((Enum) obj).name();
+					}
+					list.add(obj);
+				}
+				query.setParameterList("p" + i, list);
 			} else {
 				query.setParameter("p" + i, arg);
 			}
