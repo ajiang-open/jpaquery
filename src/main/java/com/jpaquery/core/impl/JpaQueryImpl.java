@@ -765,4 +765,14 @@ public class JpaQueryImpl implements JpaQuery {
 		}
 	}
 
+	@Override
+	public boolean isEmpty(EntityManager em, boolean cacheable) {
+		return top(em, 1, cacheable).isEmpty();
+	}
+
+	@Override
+	public boolean isEmpty(EntityManager em) {
+		return isEmpty(em, false);
+	}
+
 }

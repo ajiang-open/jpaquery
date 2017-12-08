@@ -306,6 +306,23 @@ public interface JpaQuery extends QueryRender {
 	public long count(EntityManager em);
 
 	/**
+	 * 判断是否有数据
+	 * 
+	 * @param em
+	 * @param cacheable
+	 * @return
+	 */
+	public boolean isEmpty(EntityManager em, boolean cacheable);
+
+	/**
+	 * 判断是否有数据
+	 * 
+	 * @param em
+	 * @return
+	 */
+	public boolean isEmpty(EntityManager em);
+
+	/**
 	 * 克隆一个Finder，其中所有数据项都和原Finder一致，但两者后续操作不相互影响
 	 * 
 	 * @return
