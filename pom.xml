@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jpaquery</groupId>
 	<artifactId>jpaquery</artifactId>
-	<version>0.0.10-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 	<name>JPAQuery</name>
 	<description>A tool for jpa</description>
@@ -172,7 +172,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.0.11.Final</version>
+			<version>5.2.10.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -200,27 +200,82 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<!--配置生成Javadoc包 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<aggregate>true</aggregate>
+					<charset>UTF-8</charset>
+					<docencoding>UTF-8</docencoding>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+			                <additionalparam>-Xdoclint:none</additionalparam>
+			            </configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--配置生成源码包 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 生成签名 -->
+			<!-- <plugin>  
+			    <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>  
+			</plugin> -->
+		</plugins>
+	</build>
+
 	<profiles>
 		<profile>
-			<id>snapshots</id>
-			<!-- 部署配置 -->
+			<id>jpaquery-snapshots</id>
 			<distributionManagement>
-				<repository>
+				<snapshotRepository>
 					<id>jpaquery-snapshots</id>
 					<name>JpaQuery Snapshot Repository</name>
 					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-				</repository>
+				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 		<profile>
-			<id>releases</id>
-			<!-- 部署配置 -->
+			<id>jpaquery-releases</id>
 			<distributionManagement>
-				<snapshotRepository>
+				<repository>
 					<id>jpaquery-releases</id>
 					<name>JpaQuery Release Repository</name>
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-				</snapshotRepository>
+				</repository>
 			</distributionManagement>
 		</profile>
 	</profiles>
