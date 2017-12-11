@@ -46,7 +46,7 @@ public class Querys {
 				if ("doBegin".equals(method.getName())) {
 					preDoBegin((TransactionDefinition) args[1]);
 				}
-				if ("cleanupAfterCompletion".equals(method.getName())) {
+				if ("doCleanupAfterCompletion".equals(method.getName())) {
 					preDoCleanupAfterCompletion();
 				}
 				if (!method.isAccessible()) {
