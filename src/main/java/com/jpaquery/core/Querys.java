@@ -4,8 +4,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.impl.JpaQueryHandler;
@@ -15,9 +15,9 @@ import com.jpaquery.util._Proxys;
 
 /**
  * Querys工具类
- * 
+ *
  * @author lujijiang
- * 
+ *
  */
 public class Querys {
 
@@ -25,7 +25,7 @@ public class Querys {
 
 	/**
 	 * 新建一个查询器
-	 * 
+	 *
 	 * @return
 	 */
 	public static JpaQuery newJpaQuery() {
@@ -34,19 +34,19 @@ public class Querys {
 
 	/**
 	 * 代理只读事务，开启缓存
-	 * 
+	 *
 	 * @param platformTransactionManager
 	 * @return
 	 */
-	public static PlatformTransactionManager proxyTransactionManager(
-			final PlatformTransactionManager platformTransactionManager) {
+	public static AbstractPlatformTransactionManager proxyTransactionManager(
+			final AbstractPlatformTransactionManager platformTransactionManager) {
 		return _Proxys.newProxyInstance(new InvocationHandler() {
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				if ("doBegin".equals(method.getName())) {
 					preDoBegin((TransactionDefinition) args[1]);
 				}
-				if ("doCleanupAfterCompletion".equals(method.getName())) {
+				if ("cleanupAfterCompletion".equals(method.getName())) {
 					preDoCleanupAfterCompletion();
 				}
 				if (!method.isAccessible()) {
@@ -55,7 +55,7 @@ public class Querys {
 				Object value = method.invoke(platformTransactionManager, args);
 				return value;
 			}
-		}, PlatformTransactionManager.class);
+		}, AbstractPlatformTransactionManager.class);
 	}
 
 	protected static void preDoCleanupAfterCompletion() {
@@ -84,7 +84,7 @@ public class Querys {
 
 	/**
 	 * 判断是否只读事务方法
-	 * 
+	 *
 	 * @return
 	 */
 	public static boolean isReadonly() {
