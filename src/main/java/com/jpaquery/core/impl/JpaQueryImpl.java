@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.jpaquery.core.Querys;
 import com.jpaquery.core.facade.And;
 import com.jpaquery.core.facade.Group;
 import com.jpaquery.core.facade.GroupPath;
@@ -408,7 +409,6 @@ public class JpaQueryImpl implements JpaQuery {
 
 	private Query createQuery(EntityManager em, JpaQuery finder, boolean cacheable) {
 		QueryContent queryContent = finder.toQueryContent();
-
 		Query query = createQuery(em, queryContent);
 		cacheable(query, cacheable);
 		return query;
@@ -508,6 +508,9 @@ public class JpaQueryImpl implements JpaQuery {
 	}
 
 	private void cacheable(Query query, boolean cacheable) {
+		if (!cacheable) {
+			cacheable = Querys.isReadonly();
+		}
 		query.setHint("org.hibernate.cacheable", cacheable);
 	}
 
