@@ -556,13 +556,16 @@ public class JpaQueryImpl implements JpaQuery {
 
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+				PageImpl _this = (PageImpl) proxy;
+
 				if ("getTotalElements".equals(method.getName())) {
 					fixTotal(em);
 					return total;
 				}
 				if ("getTotalPages".equals(method.getName())) {
-					fixTotal(em);
-					return page.getSize() == 0 ? 1 : (int) Math.ceil((double) total / (double) page.getSize());
+					return page.getSize() == 0 ? 1
+							: (int) Math.ceil((double) _this.getTotalElements() / (double) page.getSize());
 				}
 				return method.invoke(page, args);
 			}
