@@ -549,33 +549,40 @@ public class JpaQueryImpl implements JpaQuery {
 		JpaQuery finder = this.copy();
 		List<?> content = createQuery(em, appendSortToFinder(finder, pageable.getSort()), cacheable)
 				.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
-		long total = content.size() == pageable.getPageSize() ? -1 : pageable.getOffset() + content.size();
+		final long total = content.size() == pageable.getPageSize() ? -1 : pageable.getOffset() + content.size();
 		final PageImpl page = new PageImpl(content, pageable, total);
 		return _Proxys.newProxyInstance(new InvocationHandler() {
-			private long total = page.getTotalElements();
+			private long totalElements = total;
 
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-				PageImpl _this = (PageImpl) proxy;
-
+				Page _this = (Page) proxy;
 				if ("getTotalElements".equals(method.getName())) {
 					fixTotal(em);
-					return total;
+					return totalElements;
 				}
 				if ("getTotalPages".equals(method.getName())) {
-					return page.getSize() == 0 ? 1
-							: (int) Math.ceil((double) _this.getTotalElements() / (double) page.getSize());
+					return _this.getSize() == 0 ? 1
+							: (int) Math.ceil((double) _this.getTotalElements() / (double) _this.getSize());
+				}
+				if ("hasNext".equals(method.getName())) {
+					return _this.getNumber() + 1 < _this.getTotalPages();
+				}
+				if ("isLast".equals(method.getName())) {
+					return !_this.hasNext();
+				}
+				if ("nextPageable".equals(method.getName())) {
+					return _this.hasNext() ? pageable.next() : null;
 				}
 				return method.invoke(page, args);
 			}
 
 			public void fixTotal(EntityManager em) {
-				if (total == -1) {
-					total = count(em);
+				if (totalElements == -1) {
+					totalElements = count(em);
 				}
 			}
-		}, PageImpl.class);
+		}, Page.class);
 	}
 
 	/**

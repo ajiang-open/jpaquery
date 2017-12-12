@@ -89,17 +89,13 @@ public class _Proxys {
 			for (int i = 0; i < argumentLength; i++) {
 				parameterTypes[i] = arguments[i] == null ? null : arguments[i].getClass();
 			}
-			try {
-				return (T) en.create(parameterTypes, arguments);
-			} catch (Exception e) {
-				Constructor<?> constructor = getMatchingAccessibleConstructor(superClass, parameterTypes);
-				if (constructor == null) {
-					throw new IllegalArgumentException(
-							String.format("Could not found a constructor of type:%s for arguments types:%s",
-									superClass.getCanonicalName(), argumentTypesToString(parameterTypes)));
-				}
-				return (T) en.create(constructor.getParameterTypes(), arguments);
+			Constructor<?> constructor = getMatchingAccessibleConstructor(superClass, parameterTypes);
+			if (constructor == null) {
+				throw new IllegalArgumentException(
+						String.format("Could not found a constructor of type:%s for arguments types:%s",
+								superClass.getCanonicalName(), argumentTypesToString(parameterTypes)));
 			}
+			return (T) en.create(constructor.getParameterTypes(), arguments);
 		}
 	}
 
