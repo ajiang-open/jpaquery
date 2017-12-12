@@ -1,5 +1,7 @@
 package com.jpaquery.core.impl;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.jpaquery.core.Querys;
-import com.jpaquery.core.facade.And;
 import com.jpaquery.core.facade.Group;
 import com.jpaquery.core.facade.GroupPath;
 import com.jpaquery.core.facade.Having;
@@ -38,7 +39,6 @@ import com.jpaquery.core.facade.Join;
 import com.jpaquery.core.facade.JoinPath;
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.core.facade.JpaQueryEach;
-import com.jpaquery.core.facade.Or;
 import com.jpaquery.core.facade.Order;
 import com.jpaquery.core.facade.OrderPath;
 import com.jpaquery.core.facade.Select;
@@ -54,6 +54,7 @@ import com.jpaquery.core.vo.PathInfo;
 import com.jpaquery.core.vo.QueryContent;
 import com.jpaquery.util._Helper;
 import com.jpaquery.util._MergeMap;
+import com.jpaquery.util._Proxys;
 
 /**
  * Finder实现类
@@ -546,86 +547,32 @@ public class JpaQueryImpl implements JpaQuery {
 	@Override
 	public Page<?> page(EntityManager em, Pageable pageable, boolean cacheable) {
 		JpaQuery finder = this.copy();
-		Boolean countSwitch = null;
-		Map<String, Object> searchMap = null;
-		Map<String, Object> globalSearchMap = null;
+		List<?> content = createQuery(em, appendSortToFinder(finder, pageable.getSort()), cacheable)
+				.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
+		long total = content.size() == pageable.getPageSize() ? -1 : pageable.getOffset() + content.size();
+		final PageImpl page = new PageImpl(content, pageable, total);
+		return _Proxys.newProxyInstance(new InvocationHandler() {
+			private long total = page.getTotalElements();
 
-		// if (pageable instanceof TablePageRequest) {
-		// countSwitch = ((TablePageRequest) pageable).getCountSwitch();
-		// searchMap = ((TablePageRequest) pageable).getSearchMap();
-		// globalSearchMap = ((TablePageRequest) pageable).getGlobalSearchMap();
-		// }
+			@Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+				if ("getTotalElements".equals(method.getName())) {
+					fixTotal(em);
+					return total;
+				}
+				if ("getTotalPages".equals(method.getName())) {
+					fixTotal(em);
+					return page.getSize() == 0 ? 1 : (int) Math.ceil((double) total / (double) page.getSize());
+				}
+				return method.invoke(page, args);
+			}
 
-		// if (searchMap != null) {
-		// appendSearchMapToFinder(finder, searchMap);
-		// }
-		//
-		// if (globalSearchMap != null) {
-		// appendGlobalSearchMapToFinder(finder, globalSearchMap);
-		// }
-
-		long total = countSwitch == null || countSwitch ? count(em) : -1;
-
-		List<?> content;
-
-		if (countSwitch == null) {
-			content = total > pageable.getOffset()
-					? createQuery(em, appendSortToFinder(finder, pageable.getSort()), cacheable)
-							.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList()
-					: Collections.emptyList();
-		} else if (!countSwitch) {
-			content = createQuery(em, appendSortToFinder(finder, pageable.getSort()), cacheable)
-					.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
-		} else {
-			content = Collections.emptyList();
-		}
-		return new PageImpl(content, pageable, total);
-	}
-
-	/**
-	 * 追加search信息给Finder
-	 *
-	 * @param searchMap
-	 */
-	private void appendSearchMapToFinder(JpaQuery finder, Map<String, Object> searchMap) {
-		JpaQueryImpl finderImpl = (JpaQueryImpl) finder;
-		if (finderImpl.getSelectImpl().getSelectPaths().size() == 1) {
-			Object selectPath = finderImpl.getSelectImpl().getSelectPaths().get(0);
-			if (selectPath != null && selectPath instanceof SelectPathImpl<?>) {
-				SelectPathImpl<?> selectPathImpl = (SelectPathImpl<?>) selectPath;
-				Object arg = selectPathImpl.getArg();
-				if (arg != null && !(arg instanceof JpaQuery)) {
-					try {
-						String alias = finderImpl.alias(arg);
-						And and = finder.where().and();
-						for (String name : searchMap.keySet()) {
-							Object value = searchMap.get(name);
-							if (value != null) {
-								if (value instanceof String) {
-									and.append(alias + "." + name + " like ?", value);
-								} else {
-									and.append(alias + "." + name + " = ?", value);
-								}
-							}
-						}
-						return;
-					} catch (IllegalStateException e) {
-
-					}
+			public void fixTotal(EntityManager em) {
+				if (total == -1) {
+					total = count(em);
 				}
 			}
-		}
-		And and = finder.where().and();
-		for (String name : searchMap.keySet()) {
-			Object value = searchMap.get(name);
-			if (value != null) {
-				if (value instanceof String) {
-					and.append(name + " like ?", value);
-				} else {
-					and.append(name + " = ?", value);
-				}
-			}
-		}
+		}, PageImpl.class);
 	}
 
 	/**
@@ -662,52 +609,6 @@ public class JpaQueryImpl implements JpaQuery {
 			finder.order().append(order.getProperty().concat(" ").concat(order.getDirection().name().toLowerCase()));
 		}
 		return finder;
-	}
-
-	/**
-	 * 追加globalSearch信息给Finder
-	 *
-	 * @param globalSearchMap
-	 */
-	private void appendGlobalSearchMapToFinder(JpaQuery finder, Map<String, Object> globalSearchMap) {
-		JpaQueryImpl finderImpl = (JpaQueryImpl) finder;
-		if (finderImpl.getSelectImpl().getSelectPaths().size() == 1) {
-			Object selectPath = finderImpl.getSelectImpl().getSelectPaths().get(0);
-			if (selectPath != null && selectPath instanceof SelectPathImpl<?>) {
-				SelectPathImpl<?> selectPathImpl = (SelectPathImpl<?>) selectPath;
-				Object arg = selectPathImpl.getArg();
-				if (arg != null && !(arg instanceof JpaQuery)) {
-					try {
-						String alias = finderImpl.alias(arg);
-						Or or = finder.where().or();
-						for (String name : globalSearchMap.keySet()) {
-							Object value = globalSearchMap.get(name);
-							if (value != null) {
-								if (value instanceof String) {
-									or.append(alias + "." + name + " like ?", value);
-								} else {
-									or.append(alias + "." + name + " = ?", value);
-								}
-							}
-						}
-						return;
-					} catch (IllegalStateException e) {
-
-					}
-				}
-			}
-		}
-		Or or = finder.where().or();
-		for (String name : globalSearchMap.keySet()) {
-			Object value = globalSearchMap.get(name);
-			if (value != null) {
-				if (value instanceof String) {
-					or.append(name + " like ?", value);
-				} else {
-					or.append(name + " = ?", value);
-				}
-			}
-		}
 	}
 
 	public long count(EntityManager em) {
