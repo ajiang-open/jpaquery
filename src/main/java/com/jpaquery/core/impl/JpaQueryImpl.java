@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -396,6 +397,9 @@ public class JpaQueryImpl implements JpaQuery {
 			logger.debug("JPQL({}):{}", caller, queryContent);
 		}
 		Query query = em.createQuery(queryContent.getQueryString());
+		if (Querys.isReadonly()) {
+			query.setFlushMode(FlushModeType.COMMIT);
+		}
 		for (String name : queryContent.getArguments().keySet()) {
 			Object arg = queryContent.getArguments().get(name);
 			if (arg != null && arg instanceof Date) {
@@ -509,9 +513,6 @@ public class JpaQueryImpl implements JpaQuery {
 	}
 
 	private void cacheable(Query query, boolean cacheable) {
-		if (!cacheable) {
-			cacheable = Querys.isReadonly();
-		}
 		query.setHint("org.hibernate.cacheable", cacheable);
 	}
 

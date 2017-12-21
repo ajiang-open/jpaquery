@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jpaquery</groupId>
 	<artifactId>jpaquery</artifactId>
-	<version>0.1</version>
+	<version>0.18</version>
 	<packaging>jar</packaging>
 	<name>JPAQuery</name>
 	<description>A tool for jpa</description>
@@ -123,6 +123,7 @@
 		<commons-lang3.version>3.5</commons-lang3.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<spring-data-commons.version>1.13.1.RELEASE</spring-data-commons.version>
+		<spring.version>4.3.13.RELEASE</spring.version>
 		<hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
 		<junit.version>4.12</junit.version>
 		<log4j.version>2.6.1</log4j.version>
@@ -165,14 +166,22 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-tx</artifactId>
+		    <version>${spring.version}</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>${hibernate-jpa-2.1-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>5.2.10.Final</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -240,7 +249,7 @@
 				</executions>
 			</plugin>
 			<!-- 生成签名 -->
-			<!-- <plugin>  
+			<plugin>  
 			    <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.5</version>
@@ -253,7 +262,7 @@
 						</goals>
 					</execution>
 				</executions>  
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 
