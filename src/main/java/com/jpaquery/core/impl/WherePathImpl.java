@@ -180,6 +180,10 @@ public class WherePathImpl<T> implements WherePath<T> {
 			throw new IllegalArgumentException(
 					"In clause, only one path parameter is allowed and can not coexist with the value parameter");
 		}
+		else if(arg==null && (objs==null||objs.length==0)) {
+			throw new IllegalArgumentException(
+					"In clause, the value parameters should not be null or empty");
+		}
 		return fillPath(WherePathType.in, false, arg == null ? objs : arg);
 	}
 
@@ -188,6 +192,10 @@ public class WherePathImpl<T> implements WherePath<T> {
 		if (arg != null && objs != null && objs.length > 1) {
 			throw new IllegalArgumentException(
 					"In clause, only one path parameter is allowed and can not coexist with the value parameter");
+		}
+		else if(arg==null && (objs==null||objs.length==0)) {
+			throw new IllegalArgumentException(
+					"Not in clause, the value parameters should not be null or empty");
 		}
 		return fillPath(WherePathType.notIn, false, arg == null ? objs : arg);
 	}
