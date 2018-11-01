@@ -18,7 +18,7 @@ public class QueryTest {
 		Querys.query(query -> {
 			Student modelStudent = query.from(Student.class);
 			query.select(modelStudent.getClazz());
-			query.join(modelStudent.getTeachers().get(0).getClazzs()).left((modelClazz) -> {
+			query.join(modelStudent.getTeachers().get(0).getClazzs()).left(modelClazz -> {
 				query.where(modelClazz.getName()).equal("aaa");
 			});
 			query.where(modelStudent.getName()).equal("张三");
