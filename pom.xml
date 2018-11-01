@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jpaquery</groupId>
 	<artifactId>jpaquery</artifactId>
-	<version>0.21</version>
+	<version>1.00</version>
 	<packaging>jar</packaging>
 	<name>JPAQuery</name>
 	<description>A tool for jpa</description>
