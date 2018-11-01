@@ -5,11 +5,11 @@ public interface JoinPath<T> {
 		inner, left, right, full
 	}
 
-	T inner();
+	void inner(JoinHandler<T> joinHandler);
 
-	T left();
+	void left(JoinHandler<T> joinHandler);
 
-	T right();
+	void right(JoinHandler<T> joinHandler);
 
-	T full();
+	void full(JoinHandler<T> joinHandler);
 }

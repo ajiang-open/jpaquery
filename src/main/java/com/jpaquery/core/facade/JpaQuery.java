@@ -133,14 +133,6 @@ public interface JpaQuery extends QueryRender {
 	public <T> JoinPath<T> join(T obj);
 
 	/**
-	 * 在join实例上获得on的where子句对象（此处类似于SQL标准join子句中的on）
-	 * 
-	 * @param join
-	 * @return
-	 */
-	public abstract <T> Where on(T join);
-
-	/**
 	 * 获取查询语句
 	 * 
 	 * @return

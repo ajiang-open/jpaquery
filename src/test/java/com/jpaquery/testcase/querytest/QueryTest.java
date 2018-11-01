@@ -18,8 +18,9 @@ public class QueryTest {
 		Querys.query(query -> {
 			Student modelStudent = query.from(Student.class);
 			query.select(modelStudent.getClazz());
-			Clazz modelClazz = query.join(modelStudent.getTeachers().get(0).getClazzs()).left();
-			query.on(modelClazz).get(modelClazz.getName()).equal("aaa");
+			query.join(modelStudent.getTeachers().get(0).getClazzs()).left((modelClazz) -> {
+				query.where(modelClazz.getName()).equal("aaa");
+			});
 			query.where(modelStudent.getName()).equal("张三");
 			logger.info(query.toQueryContent().toString());
 			return null;
@@ -44,17 +45,17 @@ public class QueryTest {
 	/**
 	 * 多级Join展示
 	 */
-	// @Test
+	@Test
 	public void test3() {
 		Querys.query(query -> {
 			Student modelStudent = query.from(Student.class);
 			{
-				Clazz modelClazz = query.join(modelStudent.getClazz()).left();
-				query.on(modelClazz).get(modelClazz.getName()).equal("aaa");
-				{
-					Teacher modelTeacher = query.join(modelClazz.getTeachers()).inner();
-					query.on(modelTeacher).get(modelTeacher.getName()).equal("Miss Wang");
-				}
+				query.join(modelStudent.getTeachers().get(0).getClazzs()).left(modelClazz -> {
+					query.where(modelClazz.getName()).equal("aaa");
+					query.join(modelClazz.getTeachers()).left(modelTeacher -> {
+						query.where(modelTeacher.getName()).equal(modelClazz.getName());
+					});
+				});
 			}
 			query.where(modelStudent.getName()).equal("张三");
 			logger.info(query.toQueryContent().toString());
@@ -67,8 +68,9 @@ public class QueryTest {
 		Querys.query(query -> {
 			Student modelStudent = query.from(Student.class);
 			query.select(modelStudent.getClazz());
-			Clazz modelClazz = query.join(modelStudent.getTeachers().get(0).getClazzs()).left();
-			query.on(modelClazz).get(modelClazz.getName()).equal("aaa");
+			query.join(modelStudent.getTeachers().get(0).getClazzs()).left(modelClazz -> {
+				query.where(modelClazz.getName()).equal("aaa");
+			});
 			query.where(modelStudent.getName()).likeAllIfExist("张三");
 			query.where(modelStudent.getName()).likeAll(modelStudent.getClazz().getName());
 			logger.info(query.toQueryContent().toString());

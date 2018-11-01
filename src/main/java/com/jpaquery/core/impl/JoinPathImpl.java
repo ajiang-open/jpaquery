@@ -1,11 +1,16 @@
 package com.jpaquery.core.impl;
 
+import com.jpaquery.core.facade.JoinHandler;
 import com.jpaquery.core.facade.JoinPath;
+import com.jpaquery.core.facade.Where;
 import com.jpaquery.core.facade.Where.WhereType;
 import com.jpaquery.core.vo.EntityInfo;
 import com.jpaquery.core.vo.FromInfo;
 import com.jpaquery.core.vo.PathInfo;
+import com.jpaquery.util._Helper;
 import com.jpaquery.util._MergeMap;
+
+import java.util.LinkedList;
 
 public class JoinPathImpl<T> implements JoinPath<T> {
 
@@ -65,24 +70,40 @@ public class JoinPathImpl<T> implements JoinPath<T> {
 		this.whereImpl = new WhereImpl(finderHandler, finderImpl, WhereType.and, new _MergeMap<Long, EntityInfo<?>>());
 	}
 
-	public T inner() {
+	private void handleJoin(JoinHandler<T> joinHandler) {
+		T model = entityInfo.getProxy();
+		JoinPathImpl<?> joinPathImpl = joinImpl.getJoinPathMap().get(_Helper.identityHashCode(model));
+		LinkedList<Where> ons = finderImpl.joinOnHolder.get();
+		if (ons == null) {
+			ons = new LinkedList<Where>();
+			finderImpl.joinOnHolder.set(ons);
+		}
+		try {
+			ons.addFirst(joinPathImpl.getWhereImpl());
+			joinHandler.handle(model);
+		} finally {
+			ons.removeFirst();
+		}
+	}
+
+	public void inner(JoinHandler<T> joinHandler) {
 		this.joinPathType = JoinPathType.inner;
-		return entityInfo.getProxy();
+		handleJoin((JoinHandler<T>) joinHandler);
 	}
 
-	public T left() {
+	public void left(JoinHandler<T> joinHandler) {
 		this.joinPathType = JoinPathType.left;
-		return entityInfo.getProxy();
+		handleJoin(joinHandler);
 	}
 
-	public T right() {
+	public void right(JoinHandler<T> joinHandler) {
 		this.joinPathType = JoinPathType.right;
-		return entityInfo.getProxy();
+		handleJoin(joinHandler);
 	}
 
-	public T full() {
+	public void full(JoinHandler<T> joinHandler) {
 		this.joinPathType = JoinPathType.full;
-		return entityInfo.getProxy();
+		handleJoin(joinHandler);
 	}
 
 }

@@ -3,13 +3,7 @@ package com.jpaquery.core.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -199,7 +193,13 @@ public class JpaQueryImpl implements JpaQuery {
 		return proxy;
 	}
 
+	protected ThreadLocal<LinkedList<Where>> joinOnHolder = new ThreadLocal<LinkedList<Where>>();
+
 	public Where where() {
+		LinkedList<Where> ons = joinOnHolder.get();
+		if(ons!=null && !ons.isEmpty()){
+			return ons.getFirst();
+		}
 		return whereImpl;
 	}
 
@@ -249,14 +249,6 @@ public class JpaQueryImpl implements JpaQuery {
 
 	public <T> JoinPath<T> join(T obj) {
 		return join().get(obj);
-	}
-
-	public <T> Where on(T join) {
-		JoinPathImpl<?> joinPathImpl = joinImpl.getJoinPathMap().get(_Helper.identityHashCode(join));
-		if (joinPathImpl == null) {
-			throw new IllegalStateException(String.format("对象：%s 不是Finder：%s的Join子句代理对象", this, join));
-		}
-		return joinPathImpl.getWhereImpl();
 	}
 
 	/**
