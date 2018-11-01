@@ -23,6 +23,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.QueryTranslatorImpl;
+import org.hibernate.query.NativeQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -557,7 +558,7 @@ public class JPQL {
 				(SessionFactoryImplementor) sessionFactory);
 		queryTranslator.compile(Collections.EMPTY_MAP, false);
 		String sql = "select count(*) from (" + queryTranslator.getSQLString() + ") tmp";
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		for (int i = 0; i < argList.size(); i++) {
 			query.setParameter(i, argList.get(i));
 		}
