@@ -1,4 +1,4 @@
-package com.testcase.jpaquery.builder;
+package com.jpaquery.testcase.builder;
 
 import java.io.IOException;
 

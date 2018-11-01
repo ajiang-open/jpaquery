@@ -1,6 +1,6 @@
-package com.testcase.jpaquery.vo;
+package com.jpaquery.testcase.vo;
 
-import com.testcase.jpaquery.Gender;
+import com.jpaquery.testcase.Gender;
 
 public class VStudent {
 

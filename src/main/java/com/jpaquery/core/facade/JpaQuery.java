@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.jpaquery.core.QueryHandler;
+import com.jpaquery.core.SubQueryHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,7 +24,7 @@ public interface JpaQuery extends QueryRender {
 	 * 
 	 * @return
 	 */
-	public abstract JpaQuery subJpaQuery();
+	public abstract void subQuery(SubQueryHandler subQueryHandler);
 
 	/**
 	 * 指定from的表类型

@@ -5,4 +5,4 @@
  * @author lujijiang
  *
  */
-package com.testcase.jpaquery;
+package com.jpaquery.testcase.schema;

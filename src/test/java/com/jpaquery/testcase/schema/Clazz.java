@@ -1,4 +1,4 @@
-package com.testcase.jpaquery.schema;
+package com.jpaquery.testcase.schema;
 
 import java.util.List;
 

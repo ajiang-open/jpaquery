@@ -1,5 +1,9 @@
-package com.testcase.jpaquery.querytest;
+package com.jpaquery.testcase.querytest;
 
+import com.jpaquery.testcase.Gender;
+import com.jpaquery.testcase.schema.Student;
+import com.jpaquery.testcase.vo.VClazz;
+import com.jpaquery.testcase.vo.VStudent;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,10 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.jpaquery.core.Querys;
 import com.jpaquery.core.facade.JpaQuery;
 import com.jpaquery.example.Examples;
-import com.testcase.jpaquery.Gender;
-import com.testcase.jpaquery.schema.Student;
-import com.testcase.jpaquery.vo.VClazz;
-import com.testcase.jpaquery.vo.VStudent;
 
 public class ExampleTest {
 
@@ -25,9 +25,11 @@ public class ExampleTest {
 		vStudent.setClazz(new VClazz());
 		vStudent.getClazz().setName("A班");
 		vStudent.getClazz().setOrder(1);
-		JpaQuery jpaQuery = Querys.newJpaQuery();
-		Student modelStudent = jpaQuery.from(Student.class);
-		Examples.create().toJpaQuery(jpaQuery, vStudent, modelStudent);
-		logger.info(jpaQuery.toQueryContent().toString());
+		Querys.query(jpaQuery -> {
+			Student modelStudent = jpaQuery.from(Student.class);
+			Examples.create().toJpaQuery(jpaQuery, vStudent, modelStudent);
+			logger.info(jpaQuery.toQueryContent().toString());
+			return null;
+		});
 	}
 }

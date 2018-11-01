@@ -18,6 +18,8 @@ import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.jpaquery.core.QueryHandler;
+import com.jpaquery.core.SubQueryHandler;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory;
@@ -56,6 +58,7 @@ import com.jpaquery.core.vo.QueryContent;
 import com.jpaquery.util._Helper;
 import com.jpaquery.util._MergeMap;
 import com.jpaquery.util._Proxys;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Finder实现类
@@ -178,13 +181,14 @@ public class JpaQueryImpl implements JpaQuery {
 		joinImpl = new JoinImpl(finderHandler, this);
 	}
 
-	public JpaQuery subJpaQuery() {
+	@Override
+	public void subQuery(SubQueryHandler subQueryHandler) {
 		JpaQueryImpl subFinderImpl = new JpaQueryImpl(finderHandler, finderRender);
 		subFinderImpl.parentFinder = this;
 		subFinderImpl.getParentFromInfos().putAll(getCurrentFromInfos());
 		subFinderImpl.getParentFromInfos().putAll(getParentFromInfos());
 		subFinderImpls.add(subFinderImpl);
-		return subFinderImpl;
+		subQueryHandler.handle(subFinderImpl);
 	}
 
 	public <T> T from(Class<T> type) {
@@ -397,7 +401,7 @@ public class JpaQueryImpl implements JpaQuery {
 			logger.debug("JPQL({}):{}", caller, queryContent);
 		}
 		Query query = em.createQuery(queryContent.getQueryString());
-		if (Querys.isReadonly()) {
+		if (TransactionSynchronizationManager.isCurrentTransactionReadOnly()) {
 			query.setFlushMode(FlushModeType.COMMIT);
 		}
 		for (String name : queryContent.getArguments().keySet()) {

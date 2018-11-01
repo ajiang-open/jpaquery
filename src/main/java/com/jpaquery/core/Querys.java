@@ -20,83 +20,22 @@ import com.jpaquery.util._Proxys;
  *
  */
 public class Querys {
-
-	private static ThreadLocal<LinkedList<Boolean>> READONLY_MARK = new ThreadLocal<>();
-
 	/**
 	 * 新建一个查询器
 	 *
 	 * @return
 	 */
-	public static JpaQuery newJpaQuery() {
+	private static JpaQuery newJpaQuery() {
 		return new JpaQueryImpl(new JpaQueryHandler(), new JpaQueryRenderImpl());
 	}
 
 	/**
-	 * 代理只读事务，开启缓存
-	 *
-	 * @param platformTransactionManager
+	 * 匿名查询器
+	 * @param queryHandler
+	 * @param <T>
 	 * @return
 	 */
-	public static AbstractPlatformTransactionManager proxyTransactionManager(
-			final AbstractPlatformTransactionManager platformTransactionManager) {
-		return _Proxys.newProxyInstance(new InvocationHandler() {
-			@Override
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-				if ("doBegin".equals(method.getName())) {
-					preDoBegin((TransactionDefinition) args[1]);
-				}
-				if ("doCleanupAfterCompletion".equals(method.getName())) {
-					preDoCleanupAfterCompletion();
-				}
-				if (!method.isAccessible()) {
-					method.setAccessible(true);
-				}
-				Object value = method.invoke(platformTransactionManager, args);
-				return value;
-			}
-		}, AbstractPlatformTransactionManager.class);
+	public static <T> T query(QueryHandler<T> queryHandler){
+		return queryHandler.handle(newJpaQuery());
 	}
-
-	protected static void preDoCleanupAfterCompletion() {
-		LinkedList<Boolean> stack = READONLY_MARK.get();
-		if (stack == null) {
-			stack = new LinkedList();
-			READONLY_MARK.set(stack);
-		}
-		if (!stack.isEmpty()) {
-			stack.removeFirst();
-		}
-	}
-
-	protected static void preDoBegin(TransactionDefinition transactionDefinition) {
-		LinkedList<Boolean> stack = READONLY_MARK.get();
-		if (stack == null) {
-			stack = new LinkedList();
-			READONLY_MARK.set(stack);
-		}
-		if (transactionDefinition.isReadOnly()) {
-			stack.addFirst(true);
-		} else {
-			stack.addFirst(false);
-		}
-	}
-
-	/**
-	 * 判断是否只读事务方法
-	 *
-	 * @return
-	 */
-	public static boolean isReadonly() {
-		LinkedList<Boolean> stack = READONLY_MARK.get();
-		if (stack == null) {
-			stack = new LinkedList();
-			READONLY_MARK.set(stack);
-		}
-		if (stack.isEmpty()) {
-			return false;
-		}
-		return stack.getFirst();
-	}
-
 }

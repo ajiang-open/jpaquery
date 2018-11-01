@@ -1,4 +1,4 @@
-package com.testcase.jpaquery.vo;
+package com.jpaquery.testcase.vo;
 
 public class VClazz {
 	String name;
