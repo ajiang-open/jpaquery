@@ -25,9 +25,17 @@ public interface Where extends QueryRender {
 	 */
 	<T> WherePath<T> get(T obj);
 
-	And and();
+	/**
+	 * 并查询
+	 * @param whereHandler
+	 */
+	void and(WhereHandler whereHandler);
 
-	Or or();
+	/**
+	 * 或查询
+	 * @param whereHandler
+	 */
+	void or(WhereHandler whereHandler);
 
 	/**
 	 * 存在子查询

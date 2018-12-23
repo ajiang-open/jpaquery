@@ -77,4 +77,17 @@ public class QueryTest {
 			return null;
 		});
 	}
+
+	@Test
+	public void test6() {
+		Querys.query(query -> {
+			Student modelStudent = query.from(Student.class);
+			query.where().or(or->{
+				or.get(modelStudent.getName()).equal("111");
+				or.get(modelStudent.getName()).equal("222");
+			});
+			logger.info(query.toQueryContent().toString());
+			return null;
+		});
+	}
 }

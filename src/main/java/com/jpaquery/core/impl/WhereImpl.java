@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.jpaquery.core.facade.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jpaquery.core.facade.And;
-import com.jpaquery.core.facade.JpaQuery;
-import com.jpaquery.core.facade.Or;
-import com.jpaquery.core.facade.QueryAppender;
-import com.jpaquery.core.facade.Where;
-import com.jpaquery.core.facade.WherePath;
 import com.jpaquery.core.facade.SubJpaQuery.SubJpaQueryType;
 import com.jpaquery.core.vo.EntityInfo;
 import com.jpaquery.core.vo.QueryContent;
@@ -92,16 +87,18 @@ public class WhereImpl implements Where, Or, And {
 		return wherePath;
 	}
 
-	public And and() {
+	@Override
+	public void and(WhereHandler whereHandler) {
 		WhereImpl subWhereImpl = new WhereImpl(finderHandler, finderImpl, Where.WhereType.and, entityInfoMap);
 		wherePaths.add(subWhereImpl);
-		return subWhereImpl;
+		whereHandler.handle(subWhereImpl);
 	}
 
-	public Or or() {
+	@Override
+	public void or(WhereHandler whereHandler) {
 		WhereImpl subWhereImpl = new WhereImpl(finderHandler, finderImpl, Where.WhereType.or, entityInfoMap);
 		wherePaths.add(subWhereImpl);
-		return subWhereImpl;
+		whereHandler.handle(subWhereImpl);
 	}
 
 	public Where exists(JpaQuery subFinder) {
