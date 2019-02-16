@@ -69,6 +69,7 @@ public class QueryTest {
 			Student modelStudent = query.from(Student.class);
 			query.select(modelStudent.getClazz());
 			query.join(modelStudent.getTeachers().get(0).getClazzs()).left(modelClazz -> {
+				query.where(modelClazz).equal(new Clazz());
 				query.where(modelClazz.getName()).equal("aaa");
 			});
 			query.where(modelStudent.getName()).likeAllIfExist("张三");

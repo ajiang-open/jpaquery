@@ -366,6 +366,12 @@ public class JpaQueryImpl implements JpaQuery {
 		if (fromInfo != null) {
 			return fromInfo.getEntityInfo().getAlias();
 		}
+
+		JoinPathImpl joinPath = this.joinImpl.getJoinPathMap().get(key);
+		if(joinPath!=null){
+			return joinPath.getEntityInfo().getAlias();
+		}
+
 		throw new IllegalStateException(String.format(
 				"Should be call a model getter method or argument is model object in this finder or sub finder object"));
 	}
