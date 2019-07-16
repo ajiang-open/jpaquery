@@ -569,7 +569,7 @@ public class JPQL {
 	public <T> Page<T> page(EntityManager em, Pageable pageable, boolean cacheable) {
 		Long total = count(em);
 		List<?> content = total > pageable.getOffset()
-				? list(em, pageable.getOffset(), pageable.getPageSize(), cacheable) : Collections.emptyList();
+				? list(em, (int)pageable.getOffset(), pageable.getPageSize(), cacheable) : Collections.emptyList();
 		return new PageImpl(content, pageable, total);
 	}
 

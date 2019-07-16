@@ -551,7 +551,7 @@ public class JpaQueryImpl implements JpaQuery {
 	public Page<?> page(EntityManager em, Pageable pageable, boolean cacheable) {
 		JpaQuery finder = this.copy();
 		List<?> content = createQuery(em, appendSortToFinder(finder, pageable.getSort()), cacheable)
-				.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
+				.setFirstResult((int)pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
 		final long total = content.size() == pageable.getPageSize() ? -1 : pageable.getOffset() + content.size();
 		final PageImpl page = new PageImpl(content, pageable, total);
 		return _Proxys.newProxyInstance(new InvocationHandler() {
