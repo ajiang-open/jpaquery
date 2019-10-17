@@ -1,12 +1,6 @@
 package com.jpaquery.util;
 
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,12 +16,12 @@ public class _MergeMap<K, V> extends AbstractMap<K, V> {
 	/**
 	 * 其它引用的Map
 	 */
-	Set<Map<K, V>> others = Collections.newSetFromMap(new ConcurrentHashMap<>());
+	Set<Map<K, V>> others = Collections.newSetFromMap(Collections.synchronizedMap(new TreeMap<>()));
 
 	/**
 	 * 自身Map
 	 */
-	Map<K, V> own = new ConcurrentHashMap<>();
+	Map<K, V> own = Collections.synchronizedMap(new TreeMap<>());
 
 	@Override
 	public Set<K> keySet() {
