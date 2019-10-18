@@ -16,16 +16,15 @@ public class _MergeMap<K, V> extends AbstractMap<K, V> {
 	/**
 	 * 其它引用的Map
 	 */
-	Set<Map<K, V>> others = Collections.newSetFromMap(Collections.synchronizedMap(new TreeMap<>()));
-
+	Set<Map<K, V>> others = Collections.synchronizedSet(new LinkedHashSet<>());
 	/**
 	 * 自身Map
 	 */
-	Map<K, V> own = Collections.synchronizedMap(new TreeMap<>());
+	Map<K, V> own = Collections.synchronizedMap(new LinkedHashMap<>());
 
 	@Override
 	public Set<K> keySet() {
-		Set<K> keys = new HashSet<>();
+		Set<K> keys = new LinkedHashSet<>();
 		keys.addAll(own.keySet());
 		for (Map<K, V> other : others) {
 			keys.addAll(other.keySet());
@@ -143,5 +142,4 @@ public class _MergeMap<K, V> extends AbstractMap<K, V> {
 		}
 		return value;
 	}
-
 }
